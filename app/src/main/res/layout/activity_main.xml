@@ -237,7 +237,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -272,7 +272,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -308,7 +308,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -344,7 +344,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -378,7 +378,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -412,7 +412,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -446,7 +446,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -481,7 +481,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -515,7 +515,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -549,7 +549,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -583,7 +583,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -617,7 +617,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -647,7 +647,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -677,7 +677,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -708,7 +708,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -739,7 +739,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -769,7 +769,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -799,7 +799,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -829,7 +829,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -859,7 +859,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -889,7 +889,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -919,7 +919,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -949,7 +949,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -979,7 +979,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1009,7 +1009,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1040,7 +1040,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1070,7 +1070,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1126,7 +1126,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1182,7 +1182,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1238,7 +1238,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1300,7 +1300,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1331,7 +1331,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1361,7 +1361,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1391,7 +1391,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1421,7 +1421,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1451,7 +1451,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1481,7 +1481,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1511,7 +1511,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1541,7 +1541,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1572,7 +1572,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1602,7 +1602,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1634,7 +1634,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1664,7 +1664,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1696,7 +1696,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1726,7 +1726,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1784,7 +1784,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1814,7 +1814,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1870,7 +1870,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1900,7 +1900,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1930,7 +1930,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1960,7 +1960,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -1990,7 +1990,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -2020,7 +2020,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -2050,7 +2050,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -2080,7 +2080,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -2110,7 +2110,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />
@@ -2140,7 +2140,7 @@
                         android:ems="10"
                         android:gravity="right"
                         android:inputType="textPersonName"
-                        android:text="value not loaded"
+                        android:text="ASetting not loaded"
                         android:textAlignment="center"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="79dp" />

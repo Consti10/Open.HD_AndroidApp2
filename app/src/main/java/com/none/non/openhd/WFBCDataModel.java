@@ -5,6 +5,8 @@ package com.none.non.openhd;
 
 public class WFBCDataModel {
 
+
+
     public void DecCounter(int by)
     {
         FREQIsChanged -= by;

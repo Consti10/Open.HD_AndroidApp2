@@ -7,19 +7,19 @@
     <string name="FreqSelect">Settings</string>
 
     <string-array name="CopterArray">
-        <item>value not loaded</item>
+        <item>ASetting not loaded</item>
         <item>true</item>
         <item>false</item>
     </string-array>
 
     <string-array name="ImperialArray">
-        <item>value not loaded</item>
+        <item>ASetting not loaded</item>
         <item>true</item>
         <item>false</item>
     </string-array>
 
     <string-array name="RateArray">
-        <item>value not loaded</item>
+        <item>ASetting not loaded</item>
         <item>1200</item>
         <item>2400</item>
         <item>4800</item>
@@ -31,7 +31,7 @@
 
 
     <string-array name="FreqArray">
-        <item>value not loaded</item>
+        <item>ASetting not loaded</item>
         <item>2412</item>
         <item>2417</item>
         <item>2422</item>
@@ -116,7 +116,7 @@
     </string-array>
 
     <string-array name="EncryptionOrRangeArray">
-        <item>value not loaded</item>
+        <item>ASetting not loaded</item>
         <item>Encryption</item>
         <item>Range</item>
     </string-array>
