@@ -100,10 +100,9 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         });
     }
 
-    private void processMessageGET_OK(final String key,final String value){
+    private void processMessageGET_OK(final boolean ground,final String key,final String value){
         //find the right text view
         //update its content with value
-        //make it editable by the user
         //change its value to Greeon
         for(final ASetting setting:mSynchronizedSettings){
             if(key.equals(setting.KEY)){
@@ -119,7 +118,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         }
     }
 
-    private void processMessageCHANGE_OK(final String key,final String value){
+    private void processMessageCHANGE_OK(final boolean ground,final String key,final String value){
         //find the right text view
         //update its content with value
         //make it editable by the user
@@ -139,42 +138,36 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
     }
 
     @Override
-    public void processMessage(final String message) {
-        System.out.println("Received from server:"+ message);
-        if(message.equals("HELLO")){
-            client.sendMessage("HELLO_OK");
-            return;
-        }
-        final String[] tmp=message.split(" ",2);
-        if(tmp.length!=2){
-            System.out.println("Unknwn message:"+message);
-            return;
-        }
-        final String cmd=tmp[0];
-        final String data=tmp[1];
-        System.out.println("cmd:"+cmd+"Data:"+data);
-        switch (cmd) {
-            case "GET_OK": {
-                final String[] keyValue = data.split("=");
-                final String key = keyValue[0];
-                final String value = keyValue[1];
-                System.out.println("Key:" + key + "Value:" + value);
-                processMessageGET_OK(key,value);
+    public void processMessage(final String messageData) {
+        System.out.println("Received from server:"+ messageData);
+        final Message message=new Message(messageData);
+        switch (message.cmd) {
+            case "HELLO":{
+                client.sendMessage("HELLO_OK");
                 break;
             }
-            case "CHANGE_OK": {
-                final String[] keyValue = data.split("=");
-                final String key = keyValue[0];
-                final String value = keyValue[1];
-                System.out.println("Key:" + key + "Value:" + value);
-                processMessageCHANGE_OK(key,value);
+            case "GET_OK_G": {
+                processMessageGET_OK(true,message.dataKey,message.dataValue);
+                break;
+            }
+            case "GET_OK_A": {
+                processMessageGET_OK(false,message.dataKey,message.dataValue);
+                break;
+            }
+            case "CHANGE_OK_G": {
+                processMessageCHANGE_OK(true,message.dataKey,message.dataValue);
+                break;
+            }
+            case "CHANGE_OK_A": {
+                processMessageCHANGE_OK(false,message.dataKey,message.dataValue);
                 break;
             }
             default:
-                System.out.println("Unknown command");
+                System.out.println("Unknown command"+message.toString());
                 break;
         }
     }
+
 
     @Override
     public void connectionEstablished() {
