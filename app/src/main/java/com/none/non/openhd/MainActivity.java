@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mySpinner = (Spinner) findViewById(R.id.spinnerFreq);
 
         adapter = ArrayAdapter.createFromResource(
-                this, R.array.FreqArray, android.R.layout.simple_spinner_item);
+                this, R.array.FREQ, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mySpinner.setAdapter(adapter);
         mySpinner.setOnItemSelectedListener(this);
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String sSelected=parent.getItemAtPosition(position).toString();
                 //Toast.makeText(getApplicationContext(),sSelected,Toast.LENGTH_SHORT).show();
 
-                if(sSelected.equals("value not loaded") == false)
+                if(sSelected.equals("currentValue not loaded") == false)
                     DataModel.AddData("Imperial", sSelected,1);
                 if(DataModel.ImperialIsChanged >= 1)
                 {
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int position, long id) {
                     String sSelected=parent.getItemAtPosition(position).toString();
                     //Toast.makeText(getApplicationContext(),sSelected,Toast.LENGTH_SHORT).show();
-                    if(sSelected.equals("value not loaded") == false)
+                    if(sSelected.equals("currentValue not loaded") == false)
                         DataModel.AddData("Copter", sSelected,1);
                     if(DataModel.CopterIsChanged >= 1)
                     {
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                        int position, long id) {
                 String sSelected=parent.getItemAtPosition(position).toString();
                 //Toast.makeText(getApplicationContext(),sSelected,Toast.LENGTH_SHORT).show();
-                if(sSelected.equals("value not loaded") == false)
+                if(sSelected.equals("currentValue not loaded") == false)
                     DataModel.AddData("FC_RC_BAUDRATE", sSelected,1);
                 if(DataModel.FC_RC_BAUDRATEIsChanged >= 1)
                 {
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                        int position, long id) {
                 String sSelected=parent.getItemAtPosition(position).toString();
                 //Toast.makeText(getApplicationContext(),sSelected,Toast.LENGTH_SHORT).show();
-                if(sSelected.equals("value not loaded") == false)
+                if(sSelected.equals("currentValue not loaded") == false)
                     DataModel.AddData("FC_TELEMETRY_BAUDRATE", sSelected,1);
                 if(DataModel.FC_TELEMETRY_BAUDRATEIsChanged >= 1)
                 {
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                        int position, long id) {
                 String sSelected=parent.getItemAtPosition(position).toString();
                 //Toast.makeText(getApplicationContext(),sSelected,Toast.LENGTH_SHORT).show();
-                if(sSelected.equals("value not loaded") == false)
+                if(sSelected.equals("currentValue not loaded") == false)
                     DataModel.AddData("FC_MSP_BAUDRATE", sSelected,1);
                 if(DataModel.FC_MSP_BAUDRATEIsChanged >= 1)
                 {
@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                        int position, long id) {
                 String sSelected=parent.getItemAtPosition(position).toString();
                 //Toast.makeText(getApplicationContext(),sSelected,Toast.LENGTH_SHORT).show();
-                if(sSelected.equals("value not loaded") == false)
+                if(sSelected.equals("currentValue not loaded") == false)
                     DataModel.AddData("EncryptionOrRange", sSelected,1);
                 if(DataModel.EncryptionOrRangeIsChanged >= 1)
                 {
@@ -1394,7 +1394,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //RequestChangeSettingsFREQ=4432
         String sendmsg = "RequestChangeSettingsFREQ=";
         sendmsg += sSelected;
-        if(sSelected.equals("value not loaded") == false)
+        if(sSelected.equals("currentValue not loaded") == false)
             DataModel.AddData("FREQ", sSelected,1);
         Log.v("CounterState FREQIsC ", Integer.toString(DataModel.FREQIsChanged)  );
         if(DataModel.FREQIsChanged >= 1)
@@ -1504,7 +1504,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String tmpstr = tmp.toString().replace("/","");
                         if(tmpstr.equals(IPstr) == false && IPstr != null)
                         {
-                            //refresh ip with new value
+                            //refresh ip with new currentValue
                             //ip = tmp;
                             String status = "Ground IP: " + tmpstr;
                             IPstr = tmpstr;
@@ -1550,7 +1550,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void PackMessageAndSend(String Variable, String Data)
     {
-        if(Data.equals("value not loaded") == false)
+        if(Data.equals("currentValue not loaded") == false)
         {
             //RequestChangeSettingsFREQ=4432
             String sendmsg = "RequestChangeSettings";
@@ -1572,7 +1572,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void PackMessageAndSendOSD(String Variable, String Data)
     {
-        if(Data.equals("value not loaded") == false)
+        if(Data.equals("currentValue not loaded") == false)
         {
             //RequestChangeSettingsFREQ=4432
             String sendmsg = "RequestChangeOSD";
@@ -1594,7 +1594,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void PackMessageAndSendTxPower(String Variable, String Data)
     {
-        if(Data.equals("value not loaded") == false)
+        if(Data.equals("currentValue not loaded") == false)
         {
             //RequestChangeTxPowertxpowerA=4432
             String sendmsg = "RequestChangeTxPower";
@@ -1617,7 +1617,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void PackMessageAndSendJoystick(String Variable, String Data)
     {
-        if(Data.equals("value not loaded") == false)
+        if(Data.equals("currentValue not loaded") == false)
         {
             //RequestChangeSettingsFREQ=4432
             String sendmsg = "RequestChangeJoystick";
@@ -1866,7 +1866,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String selectedNow = SpinnerFC_RC_BAUDRATE.getSelectedItem().toString();
                 if(selectedNow.equals(Data) == true)
                     DataModel.FC_RC_BAUDRATEIsChanged = -1;
-                if(selectedNow.equals("value not loaded") == true)
+                if(selectedNow.equals("currentValue not loaded") == true)
                     DataModel.FC_RC_BAUDRATEIsChanged = -1;
                 SpinnerFC_RC_BAUDRATE.setSelection(((ArrayAdapter)SpinnerFC_RC_BAUDRATE.getAdapter()).getPosition(Data));
             }
@@ -1900,7 +1900,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String selectedNow = SpinnerFC_TELEMETRY_BAUDRATE.getSelectedItem().toString();
                 if(selectedNow.equals(Data) == true)
                     DataModel.FC_TELEMETRY_BAUDRATEIsChanged = -1;
-                if(selectedNow.equals("value not loaded") == true)
+                if(selectedNow.equals("currentValue not loaded") == true)
                     DataModel.FC_TELEMETRY_BAUDRATEIsChanged = -1;
                 SpinnerFC_TELEMETRY_BAUDRATE.setSelection(((ArrayAdapter)SpinnerFC_TELEMETRY_BAUDRATE.getAdapter()).getPosition(Data));
             }
@@ -1934,7 +1934,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String selectedNow = SpinnerFC_MSP_BAUDRATE.getSelectedItem().toString();
                 if(selectedNow.equals(Data) == true)
                     DataModel.FC_MSP_BAUDRATEIsChanged = -1;
-                if(selectedNow.equals("value not loaded") == true)
+                if(selectedNow.equals("currentValue not loaded") == true)
                     DataModel.FC_MSP_BAUDRATEIsChanged = -1;
                 SpinnerFC_MSP_BAUDRATE.setSelection(((ArrayAdapter)SpinnerFC_MSP_BAUDRATE.getAdapter()).getPosition(Data));
             }
@@ -1971,7 +1971,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String selectedNow = mySpinner.getSelectedItem().toString();
                 if(selectedNow.equals(Data) == true)
                     DataModel.FREQIsChanged = -1;
-                if(selectedNow.equals("value not loaded") == true)
+                if(selectedNow.equals("currentValue not loaded") == true)
                     DataModel.FREQIsChanged = -1;
                 mySpinner.setSelection(((ArrayAdapter)mySpinner.getAdapter()).getPosition(Data));
             }
@@ -2352,7 +2352,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String selectedNow = SpinnerCopter.getSelectedItem().toString();
                 if(selectedNow.equals(Data) == true)
                     DataModel.CopterIsChanged = -1;
-                if(selectedNow.equals("value not loaded") == true)
+                if(selectedNow.equals("currentValue not loaded") == true)
                     DataModel.CopterIsChanged = -1;
                 SpinnerCopter.setSelection(((ArrayAdapter)SpinnerCopter.getAdapter()).getPosition(Data));
             }
@@ -2389,7 +2389,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String selectedNow = SpinnerImperial.getSelectedItem().toString();
                 if(selectedNow.equals(Data) == true)
                     DataModel.ImperialIsChanged = -1;
-                if(selectedNow.equals("value not loaded") == true)
+                if(selectedNow.equals("currentValue not loaded") == true)
                     DataModel.ImperialIsChanged = -1;
                 SpinnerImperial.setSelection(((ArrayAdapter)SpinnerImperial.getAdapter()).getPosition(Data));
             }
@@ -3519,7 +3519,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String selectedNow = SpinnerEncryptionOrRange.getSelectedItem().toString();
                 if(selectedNow.equals(Data) == true)
                     DataModel.EncryptionOrRangeIsChanged = -1;
-                if(selectedNow.equals("value not loaded") == true)
+                if(selectedNow.equals("currentValue not loaded") == true)
                     DataModel.EncryptionOrRangeIsChanged = -1;
                 SpinnerEncryptionOrRange.setSelection(((ArrayAdapter)SpinnerEncryptionOrRange.getAdapter()).getPosition(Data));
             }

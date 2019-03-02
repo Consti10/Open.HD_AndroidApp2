@@ -7,19 +7,19 @@
     <string name="FreqSelect">Settings</string>
 
     <string-array name="CopterArray">
-        <item>ASetting not loaded</item>
+        <item>Setting not loaded</item>
         <item>true</item>
         <item>false</item>
     </string-array>
 
     <string-array name="ImperialArray">
-        <item>ASetting not loaded</item>
+        <item>Setting not loaded</item>
         <item>true</item>
         <item>false</item>
     </string-array>
 
     <string-array name="RateArray">
-        <item>ASetting not loaded</item>
+        <item>Setting not loaded</item>
         <item>1200</item>
         <item>2400</item>
         <item>4800</item>
@@ -30,8 +30,20 @@
     </string-array>
 
 
-    <string-array name="FreqArray">
-        <item>ASetting not loaded</item>
+
+
+    <string-array name="EncryptionOrRangeArray">
+        <item>Setting not loaded</item>
+        <item>Encryption</item>
+        <item>Range</item>
+    </string-array>
+
+    <string name="SyncColors"> <font fgcolor='#0000FF'>Air only. </font> <font fgcolor='#FF0000'>Ground only. </font>  <font fgcolor='#00FF00'>Both.</font></string>
+
+    <!-- OpenHD Settings -->
+
+    <string-array name="FREQ">
+        <item>Setting not loaded</item>
         <item>2412</item>
         <item>2417</item>
         <item>2422</item>
@@ -112,16 +124,34 @@
         <item>5785</item>
         <item>5805</item>
         <item>5825</item>
-
     </string-array>
 
-    <string-array name="EncryptionOrRangeArray">
-        <item>ASetting not loaded</item>
-        <item>Encryption</item>
-        <item>Range</item>
+    <string-array name="TXMODE">
+        <item>single</item>
+        <item>dual</item>
     </string-array>
 
-    <string name="SyncColors"> <font fgcolor='#0000FF'>Air only. </font> <font fgcolor='#FF0000'>Ground only. </font>  <font fgcolor='#00FF00'>Both.</font></string>
+    <!--1=5.5Mbit, 2=11Mbit, 3=12Mbit, 4=19.5Mbit/18Mbit, 5=24Mbit, 6=36Mbit-->
+    <string-array name="DATARATE">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+
+    //FPS allows all
+
+    <string-array name="TELEMETRY_TRANSMISSION">
+        <item>wbc</item>
+        <item>external</item>
+    </string-array>
+
+    <string-array name="TELEMETRY_UPLINK">
+        <item>mavlink</item>
+        <item>disabled</item>
+    </string-array>
 
 
 </resources>

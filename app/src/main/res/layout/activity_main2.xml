@@ -13,18 +13,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/buttonRefresh"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Refresh" />
-
-            <Button
-                android:id="@+id/buttonSave"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Save" />
-
 
             <TableLayout
                 android:id="@+id/tableLayout"
@@ -32,6 +20,20 @@
                 android:layout_height="wrap_content"
                 android:stretchColumns="1">
 
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <Button
+                        android:id="@+id/buttonRefresh"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Refresh" />
+                    <Button
+                        android:id="@+id/buttonApply"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Apply" />
+                </TableRow>
             </TableLayout>
 
 
