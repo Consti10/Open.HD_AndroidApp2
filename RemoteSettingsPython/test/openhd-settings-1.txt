@@ -6,11 +6,11 @@
 # ============================================================
 #
 # Desired frequency in MHz
-FREQ=2372
+FREQ=1234
 #
 # Set to "Y" on the RX for auto-scanning. Frequency still has to be set on TX!
 # Feature might be buggy or not work at all!
-FREQ=2372
+FREQ=1234
 #
 # the following frequencies are supported:
 # 2412, 2417, 2422, 2427, 2432, 2437, 2442, 2447, 2452, 2457, 2462, 2467, 2472, 2484 (Ralink and Atheros)
@@ -32,23 +32,23 @@ FREQ=2372
 TXMODE=single
 #
 MAC_RX[0]=00c0ca91ee30
-FREQ=2372
+FREQ=1234
 #
 MAC_RX[1]=24050f953384
-FREQ=2372
+FREQ=1234
 #
 MAC_RX[2]=24050f953378
-FREQ=2372
+FREQ=1234
 #
 MAC_RX[3]=24050f953373
-FREQ=2372
+FREQ=1234
 #
 #
 MAC_TX[0]=24050f953378
-FREQ=2372
+FREQ=1234
 #
 MAC_TX[1]=ec086b1c7834
-FREQ=2372
+FREQ=1234
 #
 #
 # Wifi Datarate. Lower settings yield higher range and vice versa.

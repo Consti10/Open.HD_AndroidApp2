@@ -2,8 +2,9 @@ package com.none.non.openhd.newStuff;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -42,7 +43,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         for(final ASetting setting: mSynchronizedSettings){
             tableLayout.addView(setting.tableRow);
             //Disable the edit text - only as soon as it is initialized with its default currentValue we enable it
-            setting.inputViewSetEnabled(false);
+            setting.reset();
         }
 
         bRefresh.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +52,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
                 //Disable all views
                 //send GET message for all synchronized settings
                 for(final ASetting setting:mSynchronizedSettings){
-                    setting.inputViewSetEnabled(false);
+                    setting.reset();
                     client.sendMessage("GET "+setting.KEY);
                 }
             }
@@ -60,20 +61,35 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         bApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean anythingChangedByUser=false;
+                final ArrayList<ASetting> modifiedSettings=new ArrayList<>();
                 for(final ASetting setting:mSynchronizedSettings){
                     if(setting.hasBeenUpdatedByUser()){
-                        setting.inputViewSetEnabled(false);
-                        anythingChangedByUser=true;
-                        client.sendMessage("CHANGE "+setting.KEY+"="+setting.getCurrentValue());
+                        modifiedSettings.add(setting);
                     }
                 }
-                if(!anythingChangedByUser){
+                if(!modifiedSettings.isEmpty()){
+                    StringBuilder messageToUser= new StringBuilder("Do you want to change these values:\n");
+                    for(final ASetting setting: modifiedSettings){
+                        messageToUser.append(setting.KEY).append(" ").append(setting.getCurrentValue()).append("\n");
+                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setCancelable(false);
+                    builder.setMessage(messageToUser.toString());
+                    builder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            for(final ASetting setting:modifiedSettings){
+                                client.sendMessage("CHANGE "+setting.KEY+"="+setting.getCurrentValue());
+                                setting.reset();
+                            }
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }else{
                     Toast.makeText(context,"Change settings first",Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
     }
 
     @Override
@@ -101,17 +117,14 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
     }
 
     private void processMessageGET_OK(final boolean ground,final String key,final String value){
-        //find the right text view
-        //update its content with value
-        //change its value to Greeon
+        //find the matching setting and call its processing function
+        //run this function on the UI thread
         for(final ASetting setting:mSynchronizedSettings){
             if(key.equals(setting.KEY)){
                 ((Activity)context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setting.inputViewSetEnabled(true);
-                        setting.inputViewUpdateText(value);
-                        setting.setColor(Color.GREEN);
+                        setting.processMessageGET_OK(ground,value);
                     }
                 });
             }
@@ -119,18 +132,14 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
     }
 
     private void processMessageCHANGE_OK(final boolean ground,final String key,final String value){
-        //find the right text view
-        //update its content with value
-        //make it editable by the user
-        //change its color to green
+        //find the matching setting and call its processing function
+        //run this function on the UI thread
         for(final ASetting setting:mSynchronizedSettings){
             if(key.equals(setting.KEY)){
                 ((Activity)context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setting.inputViewSetEnabled(true);
-                        setting.inputViewUpdateText(value);
-                        setting.setColor(Color.GREEN);
+                        setting.processMessageCHANGE_OK(ground,value);
                     }
                 });
             }
@@ -172,7 +181,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
     @Override
     public void connectionEstablished() {
         for(final ASetting setting : mSynchronizedSettings){
-            client.sendMessage("GET "+setting.KEY);
+            //client.sendMessage("GET "+setting.KEY);
         }
     }
 
@@ -188,16 +197,9 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         list.add(new ASetting("FC_MSP_BAUDRATE",this));
         list.add(new ASetting("FREQ",this,R.array.FREQ));
         list.add(new ASetting("FC_RC_SERIALPORT",this));
-        list.add(new ASetting("DefaultAudioOut",this));
-        list.add(new ASetting("RemoteSettingsEnabled",this));
-        list.add(new ASetting("IsAudioTransferEnabled",this));
-        list.add(new ASetting("txpowerA",this));
-        list.add(new ASetting("txpowerR",this));
         list.add(new ASetting("FC_TELEMETRY_SERIALPORT",this));
         list.add(new ASetting("FC_MSP_SERIALPORT",this));
         list.add(new ASetting("UPDATE_NTH_TIME",this));
-        list.add(new ASetting("Copter",this,R.array.CopterArray));
-        list.add(new ASetting("Imperial",this,R.array.ImperialArray));
         list.add(new ASetting("DATARATE",this));
         list.add(new ASetting("VIDEO_BLOCKS",this));
         list.add(new ASetting("VIDEO_FECS",this));
@@ -221,6 +223,16 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         list.add(new ASetting("ENABLE_SCREENSHOTS",this));
         list.add(new ASetting("FORWARD_STREAM",this));
         list.add(new ASetting("VIDEO_UDP_PORT",this));
+        //OSD
+        //list.add(new ASetting("Copter",this,R.array.CopterArray));
+        //list.add(new ASetting("Imperial",this,R.array.ImperialArray));
+        //Special
+        list.add(new ASetting("txpowerA",this));
+        list.add(new ASetting("txpowerR",this));
+        //
+        list.add(new ASetting("DefaultAudioOut",this));
+        list.add(new ASetting("RemoteSettingsEnabled",this));
+        list.add(new ASetting("IsAudioTransferEnabled",this));
         list.add(new ASetting("IsCamera1Enabled",this));
         list.add(new ASetting("IsCamera2Enabled",this));
         list.add(new ASetting("IsCamera3Enabled",this));

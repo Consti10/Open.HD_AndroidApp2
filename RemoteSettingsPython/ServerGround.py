@@ -9,33 +9,32 @@ import socket
 import sys
 from io import StringIO
 import io
-from FileParser import *
+from SettingsDatabase import *
 import time
 import threading
 from threading import Thread
 from Forwarder import ForwardMessageToAirPiAndAwaitResponse,ForwardMessageToAirPi
 from Message import *
 from ServerAir import ReplyLoop
-
+from time import sleep
 from queue import Queue
 
-
-allSettingsInDictionary={}
-allSettingsInDictionary.update(read_bash_file(WFBCSettingsFile))
-allSettingsInDictionary.update(read_header_file(OSDSettingsFile))
-allSettingsInDictionary.update(read_header_file(JoyconfigSettingsFile))
 
 #Thread-safe queue for messages coming from the air pi. Read by the TCP thread, written by the WFB receiver thread
 responsesFromAirPi=Queue()
 #responsesFromAirPi.put("Hello from queue")
 
+settingsDatabase=createSettingsDatabase('G')
 
 #Change value on ground pi
 #forward message to air pi
 def processChangeMessage(key,value):
     print("Changing Key on ground pi:",key,"Value:",value)
+    global settingsDatabase
     #Change value from x to y on ground pi
-    #TODO change value
+    changeSetting(settingsDatabase,key,value)
+    #refresh the local database
+    settingsDatabase=createSettingsDatabase('G')
     #forward message to air pi, we will receive the response in a different Thread
     ForwardMessageToAirPi(BuildMessageCHANGE(key,value))
     return BuildMessageCHANGE_OK("G",key,value)
@@ -46,12 +45,9 @@ def processChangeMessage(key,value):
 def processGetMessage(key):
     print("Optaining value for Key on ground pi:",key)
     ForwardMessageToAirPi(BuildMessageGET(key))
-    if(key=="VERSION"):
-        value="OpenHD_1.1.1"
-    else:
-        value=allSettingsInDictionary.get(key)
-        if(value==None):
-            value="INVALID_SETTING"
+    value=getValueForKey(settingsDatabase,key)
+    if(value==None):
+        value="INVALID_SETTING"
     return BuildMessageGET_OK("G",key,value)
     
 
@@ -59,7 +55,7 @@ def processGetMessage(key):
 def processMessageFromClient(msg):
     cmd,data=ParseMessage(msg)
     if(cmd=="CHANGE"):
-        key,value=data.split("=")
+        key,value=ParseMessageData(data)
         return processChangeMessage(key,value)
     elif(cmd=="GET"):
         return processGetMessage(data)
@@ -81,9 +77,9 @@ def ListenForAirPiMessages():
         receiveSock=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
         receiveSock.bind(('localhost',9090))
         data=receiveSock.recv(1024)
-        if(data):
-            global responsesFromAirPi
-            responsesFromAirPi.put(data)
+        #if(data):
+        global responsesFromAirPi
+        responsesFromAirPi.put(data.decode())
 
 
 #create a new Thread which listens for incoming responses from the air pi and adds them to the queue,
@@ -91,14 +87,14 @@ def ListenForAirPiMessages():
 thread1 = Thread(target = ListenForAirPiMessages)
 thread1.start()
 
-
+#this one is only needed when starting the system on a local pc to emulate rpi behaviour
 thread2 = Thread(target = ReplyLoop)
 thread2.start()
 
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Bind the socket to the address given on the command line
+# Bind the socket to localhost
 server_address = ("0.0.0.0", 5601)
 print('starting up on %s port %s' % server_address)
 sock.bind(server_address)

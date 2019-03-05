@@ -7,19 +7,16 @@
     <string name="FreqSelect">Settings</string>
 
     <string-array name="CopterArray">
-        <item>Setting not loaded</item>
         <item>true</item>
         <item>false</item>
     </string-array>
 
     <string-array name="ImperialArray">
-        <item>Setting not loaded</item>
         <item>true</item>
         <item>false</item>
     </string-array>
 
     <string-array name="RateArray">
-        <item>Setting not loaded</item>
         <item>1200</item>
         <item>2400</item>
         <item>4800</item>
@@ -33,7 +30,6 @@
 
 
     <string-array name="EncryptionOrRangeArray">
-        <item>Setting not loaded</item>
         <item>Encryption</item>
         <item>Range</item>
     </string-array>
@@ -43,7 +39,6 @@
     <!-- OpenHD Settings -->
 
     <string-array name="FREQ">
-        <item>Setting not loaded</item>
         <item>2412</item>
         <item>2417</item>
         <item>2422</item>

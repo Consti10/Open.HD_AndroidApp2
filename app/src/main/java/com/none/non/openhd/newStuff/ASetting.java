@@ -15,12 +15,18 @@ import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Abstract setting
  */
 
 @SuppressWarnings("WeakerAccess")
 public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher {
+    private static final String NOT_LOADED="Setting not loaded";
+    private static final String NOT_IN_SYNC="Not in sync";
 
     public final String KEY;
     //Text view holding key
@@ -30,12 +36,13 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
     //one of them is always null while the other one is active
     //(that's why there are 2 constructors)
     private final Spinner spinner;
-    private final ArrayAdapter<CharSequence> adapter; //null when not spinner
+    private final ArrayAdapter<String> adapter; //null when not spinner
     private final EditText editText;
     public final TableRow tableRow;
     private final UserChangedText userChangedText=new UserChangedText() {
         @Override
         public void onTextChanged(String newText) {
+            System.out.println("user changed text"+newText+KEY);
             setColor(Color.RED);
             updatedByUser=true;
         }
@@ -47,7 +54,6 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
         textView=new TextView(c);
         textView.setText(KEY);
         editText=new EditText(c);
-        editText.setText("Setting not loaded");
         editText.setInputType(InputType.TYPE_CLASS_TEXT);
         spinner=null;
         adapter=null;
@@ -62,8 +68,12 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
         textView=new TextView(c);
         textView.setText(KEY);
         spinner=new Spinner(c);
-        adapter=ArrayAdapter.createFromResource(
-                c, textArrayResId, android.R.layout.simple_spinner_item);
+        final ArrayList<String> dropdownValues= new ArrayList<>(Arrays.asList(c.getResources().getStringArray(textArrayResId)));
+        dropdownValues.add(NOT_LOADED);
+        dropdownValues.add(NOT_IN_SYNC);
+        //adapter=ArrayAdapter.createFromResource(
+        //        c, textArrayResId, android.R.layout.simple_spinner_item);
+        adapter=new ArrayAdapter<String>(c,android.R.layout.simple_spinner_dropdown_item,dropdownValues);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         editText=null;
@@ -77,9 +87,51 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
     public boolean hasBeenUpdatedByUser(){
         return updatedByUser;
     }
+    public String getCurrentValue(){
+        if(spinner!=null){
+            return spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
+        }
+        return editText.getText().toString();
+    }
+    public void reset(){
+        updatedByUser=false;
+        setColor(Color.RED);
+        inputViewUpdateText(NOT_LOADED);
+        inputViewSetEnabled(false);
+    }
 
+    public void processMessageGET_OK(final boolean ground,final String value){
+        //System.out.println("Process get_ok "+KEY+" "+ground+" "+value);
+        //System.out.println("Curr"+getCurrentValue());
+        if(!ground){
+            if(value.equals(getCurrentValue())){
+                //air and ground are in sync
+                inputViewSetEnabled(true);
+                setColor(Color.GREEN);
+            }else{
+                inputViewUpdateText(NOT_IN_SYNC);
+                inputViewSetEnabled(false);
+            }
+        }else{
+            inputViewUpdateText(value);
+            setColor(Color.YELLOW);
+        }
+    }
 
-    public void inputViewSetEnabled(final boolean enable){
+    public void processMessageCHANGE_OK(final boolean ground,final String value){
+        if(!ground){
+            if(value.equals(getCurrentValue())){
+                //air and ground are in sync
+                inputViewSetEnabled(true);
+                setColor(Color.GREEN);
+            }
+        }else{
+            inputViewUpdateText(value);
+            setColor(Color.YELLOW);
+        }
+    }
+
+    private void inputViewSetEnabled(final boolean enable){
         if(spinner!=null){
             spinner.setEnabled(enable);
         }else{
@@ -87,7 +139,7 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
         }
     }
 
-    public void setColor(@ColorInt int color){
+    private void setColor(@ColorInt int color){
         if(spinner!=null){
             spinner.setBackgroundColor(color);
         }else{
@@ -95,14 +147,8 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
         }
     }
 
-    public String getCurrentValue(){
-        if(spinner!=null){
-            return spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
-        }
-        return textView.getText().toString();
-    }
-
-    public void inputViewUpdateText(final String value){
+    //update input view without notifying the watchers
+    private void inputViewUpdateText(final String value){
         //when the input view is an edit text, we just update its content
         //else, we have to find the right index from the drop down menu
         if(editText!=null){
@@ -114,12 +160,11 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
             spinner.setOnItemSelectedListener(null);
             int spinnerPosition=adapter.getPosition(value);
             if(spinnerPosition!=-1){
-                spinner.setSelection(spinnerPosition);
+                spinner.setSelection(spinnerPosition,false);//animate==false important else the listener gets notified ! (WTF android !!)
             }
             spinner.setOnItemSelectedListener(this);
         }
     }
-
 
 
     @Override

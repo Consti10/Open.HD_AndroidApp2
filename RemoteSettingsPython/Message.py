@@ -21,7 +21,6 @@ def ParseMessage(message):
     #print("Cmd:",cmd,"blank:",blank,"data:",data)
     return cmd,data
 
-
 def ParseMessageData(data):
     key,value=data.split("=")
     return key,value

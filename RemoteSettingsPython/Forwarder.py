@@ -32,8 +32,9 @@ from threading import Thread
 #make sure to start listening on the response UDP socket before sending
 def ForwardMessageToAirPi(Message):
     #Send data to the air pi on the right UDP socket
+    print("forwarding message to air",Message)
     sendSock=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-    sendSock.sendto(Message.encode(),('localhost', 9393))
+    sendBytes=sendSock.sendto(Message.encode(),('localhost', 9393))
 
 
 
@@ -50,7 +51,7 @@ def ForwardMessageToAirPiAndAwaitResponse(Message):
     sendSock.sendto(Message.encode(),('localhost', 9393))
     try:
         data=receiveSock.recv(1024)
-        print("Received from air pi:",data)
+        print("Received from air pi:",data.decode())
         return data.decode()
     except socket.timeout as e:
         print("Nothing received from air pi in time",e)

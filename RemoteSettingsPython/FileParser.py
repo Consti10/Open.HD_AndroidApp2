@@ -7,15 +7,9 @@ from shutil import move
 from os import fdopen, remove
 
 
-OSDSettingsFile = "test/osdconfig.txt"
-WFBCSettingsFile = "test/openhd-settings-1.txt"
-JoyconfigSettingsFile = "test/joyconfig.txt"
-
-
 #there are 2 different types of files we need to read / modify
 #1) files that contain '#define's' and are included in .c files. e.g. the osdconfig.txt file
 #2) files that are used in a bash context, they use '#' for uncomment else lines can contain up to 1 key=value pair
-
 
 #file_path: input file
 #return: Dictionary containing key-value-pairs of input heeader file
@@ -76,7 +70,8 @@ def replace_in_bash_file(file_path,key,value):
     with fdopen(fh,'w') as new_file:
         with open(file_path) as old_file:
             for line in old_file:
-                if  line.startswith(key+"="):
+                lineWithoutBlanks=line.replace(" ","")
+                if  lineWithoutBlanks.startswith(key+"="):
                     new_file.write(key+"="+value+"\n")
                 else:
                     new_file.write(line)
@@ -86,53 +81,5 @@ def replace_in_bash_file(file_path,key,value):
     move(abs_path, file_path)
 
 
-#determine in which file this key is stored
-def determineSettingsLocation(key):
-    pass
-
-#place: Determines in which file the tuple is saved
-def changeSetting(place,key,value):
-    if(place=='OpenHD'):
-        replace_in_bash_file(OSDSettingsFile,key,value)
-    elif (place==''):
-        pass
 
 
-
-def test1():
-    print("read files into dictionary and print dictionary's values")
-    dictionary=read_header_file(OSDSettingsFile)
-    for i in dictionary:
-        print(i,dictionary[i])
-    print('------------------------')
-    dictionary=read_bash_file(WFBCSettingsFile)
-    for i in dictionary:
-        print(i,dictionary[i])
-
-
-def test2():
-    allSettingsInDictionary={}
-    #allSettingsInDictionary.update(read_bash_file(WFBCSettingsFile))
-    #allSettingsInDictionary.update(read_header_file(OSDSettingsFile))
-    allSettingsInDictionary.update(read_header_file(JoyconfigSettingsFile))
-    for i in allSettingsInDictionary:
-        print(i,allSettingsInDictionary[i])
-
-
-#replace 1 value in a header and 1 value in a bash file
-def test3():
-    replace_in_bash_file(WFBCSettingsFile,"FREQ","2372")
-    replace_in_header_file(OSDSettingsFile,"DOWNLINK_RSSI_POS_X", "13")
-
-
-#used this one to read the OpenHD-settings-1 file into the SynchronizedSettings list
-def readForApp():
-    dictionary=read_bash_file(WFBCSettingsFile)
-    for i in dictionary:
-        print("list.add(new ASetting(\""+i+"\",this));")
-
-#test1()
-#test2()
-#test3()
-
-#readForApp()
