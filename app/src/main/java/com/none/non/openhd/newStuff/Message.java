@@ -1,6 +1,6 @@
 package com.none.non.openhd.newStuff;
 
-//TODO: Really dirty as of yet
+//TODO: Really dirty implementation. Improve !
 
 @SuppressWarnings("WeakerAccess")
 public class Message {

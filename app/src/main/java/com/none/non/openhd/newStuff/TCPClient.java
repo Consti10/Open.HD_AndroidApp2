@@ -1,11 +1,14 @@
 package com.none.non.openhd.newStuff;
 
+import android.content.Context;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.NoSuchElementException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
@@ -13,16 +16,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class TCPClient {
 
     private static final int PORT = 5601;
-    //TODO get IP by IPResolver, hardcoded currently
-    private static final String IP="192.168.42.136";
-
-    private Thread mTCPThread;
 
     private final LinkedBlockingQueue<String> mSendQueue;
     private final ProcessMessage mProcessMessage;
 
+    private Thread mTCPThread;
+
     public TCPClient(final ProcessMessage processMessage){
-        mSendQueue=new LinkedBlockingQueue<String>(100);
+        mSendQueue= new LinkedBlockingQueue<>();
         this.mProcessMessage =processMessage;
     }
 
@@ -30,40 +31,64 @@ public class TCPClient {
         mSendQueue.offer(message);
     }
 
-    public void start(){
+    public void start(final Context c){
         mTCPThread=new Thread(new Runnable() {
             @Override
             public void run() {
                 while(!mTCPThread.isInterrupted()){
-                    System.out.println("Start client");
+                    final String IP=IPResolver.resolveOpenHDIP(c);
+                    if(IP==null){
+                        //Wait a little bit before trying again
+                        try{ Thread.sleep(1000); } catch (InterruptedException ignored) { continue; }
+                        continue;
+                    }
+                    System.out.println("Start client on "+IP);
+                    Socket clientSocket;
+                    DataOutputStream outToServer;
+                    BufferedReader inputFromServer;
                     try {
-                        Socket clientSocket = new Socket(IP, PORT);
+                        clientSocket = new Socket(IP, PORT);
                         clientSocket.setSoTimeout(100);
-                        DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-                        BufferedReader inputFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                        outToServer = new DataOutputStream(clientSocket.getOutputStream());
+                        inputFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                         mSendQueue.clear();
-                        mProcessMessage.connectionEstablished();
+                    }catch (IOException ignored){
+                        continue;
+                    }
+                    mProcessMessage.connectionEstablished();
+                    //Now receive and send data until an IO exception occurs or the thread is interrupted
+                    try {
                         while (!mTCPThread.isInterrupted()) {
                             try {
                                 String msg;
-                                while ((msg = mSendQueue.poll()) != null) {
-                                    //System.out.println("Sending:" + msg);
+                                while ((msg = mSendQueue.element()) != null) {
                                     outToServer.writeBytes(msg + "\n");
+                                    mSendQueue.remove(msg);
+                                    System.out.println("Wrote to server"+msg);
+                                }
+                                outToServer.flush();
+                            } catch (NoSuchElementException ignored) {
+                            } catch (SocketTimeoutException ignored) {
+                                //System.out.println("error sending");
+                                //ignored.printStackTrace();
+                            }
+                            try {
+                                String line;
+                                while((line=inputFromServer.readLine())!=null){
+                                    mProcessMessage.processMessage(line);
                                 }
                             } catch (SocketTimeoutException ignored) {
                             }
-                            try {
-                                final String line = inputFromServer.readLine();
-                                //final String message=line.substring(0,line.length()-1);
-                                mProcessMessage.processMessage(line);
-                            } catch (SocketTimeoutException ignored) {
-                            }
                         }
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                    try {
                         clientSocket.close();
                     } catch (IOException e) {
-                        //e.printStackTrace();
-                        System.out.println("Client cannot connect");
+                        e.printStackTrace();
                     }
+                    mProcessMessage.connectionClosed();
                 }
             }
         });
@@ -72,6 +97,11 @@ public class TCPClient {
 
     public void stop(){
         mTCPThread.interrupt();
+    }
+
+
+    public void join() throws InterruptedException {
+        mTCPThread.join();
     }
 
 

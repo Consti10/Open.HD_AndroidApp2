@@ -7,21 +7,23 @@ import android.content.IntentFilter;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
-import java.util.Objects;
 
 //Created for FPV-VR by Constantin
 
 public final class IsConnected {
 
-    public static final int USB_NOTHING=0,USB_CONNECTED=1,USB_TETHERING=2;
+    //public static final int USB_NOTHING=0,USB_CONNECTED=1,USB_TETHERING=2;
+    public enum USB_CONNECTION{
+        NOTHING,DATA,TETHERING
+    }
 
-    @SuppressLint("MissingPermission")
-    public static boolean checkWifiConnectedToEZWB(Context context){
-        boolean M1Connected=false;
+
+    private static boolean checkWifiConnectedToNetwork(final Context context,final String name){
         WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo;
         if (wifiManager != null) {
@@ -31,54 +33,68 @@ public final class IsConnected {
         }
         if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED ) {
             String ssid = wifiInfo.getSSID();
-            M1Connected = ssid.equals("\"EZ-WifiBroadcast\"") || ssid.equals("\"Connectify-0\"");
-            //System.out.println("SSID:"+ssid);
+            if(ssid.equals(name)){
+                return true;
+            }
         }
-        return M1Connected;
+        return false;
         //System.out.println(wifiInfo.getSupplicantState().toString());
     }
 
-
-    //0: nothing; 1:usb connected 2:usb connected&usb tethering
-    public static int checkTetheringConnectedToEZWB(Context context){
-        if(isUSBConnected(context)){
-            if(isTetheringActive()){
-                return USB_TETHERING;
-            }else{
-                return USB_CONNECTED;
-            }
-        }else{
-            return USB_NOTHING;
-        }
+    public static boolean checkWifiConnectedOpenHD(final Context context){
+        return checkWifiConnectedToNetwork(context,"\"Open.HD\"");
     }
 
-    public static boolean isUSBConnected(Context context){
-        Intent intent = context.registerReceiver(null, new IntentFilter("android.hardware.usb.action.USB_STATE"));
-        boolean ret;
-        try{
-            ret= Objects.requireNonNull(Objects.requireNonNull(intent).getExtras()).getBoolean("connected");
-        }catch (Exception e){
-            //e.printStackTrace();
-            ret=false;
-        }
-        return ret;
+    public static boolean checkWifiConnectedTest(final Context context){
+        return checkWifiConnectedToNetwork(context,"\"LenovoTest\"");
     }
 
-    private static boolean isTetheringActive(){
+    public static boolean checkWifiConnectedEZWB(final Context context){
+        return checkWifiConnectedToNetwork(context,"\"EZ-WifiBroadcast\"");
+    }
+
+
+    public static USB_CONNECTION getUSBStatus(Context context){
+        final Intent intent = context.registerReceiver(null, new IntentFilter("android.hardware.usb.action.USB_STATE"));
+        assert intent!=null;
+        final Bundle extras=intent.getExtras();
+        assert extras!=null;
+        final boolean connected=extras.getBoolean("connected",false);
+        final boolean tetheringActive=extras.getBoolean("rndis",false);
+        if(tetheringActive){
+            return USB_CONNECTION.TETHERING;
+        }
+        if(connected){
+            return USB_CONNECTION.DATA;
+        }
+        return USB_CONNECTION.NOTHING;
+    }
+
+
+    public static String getUSBTetheringLoopbackAddress(){
         try{
             for(Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();){
-                NetworkInterface intf=en.nextElement();
-                for(Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();){
-                    InetAddress inetAddress=enumIpAddr.nextElement();
-                    if(!intf.isLoopback()){
-                        if(intf.getName().contains("rndis")){
-                            return true;
-                        }
+                final NetworkInterface intf=en.nextElement();
+                //System.out.println("Intf:"+intf.getName());
+                if(intf.getName().contains("rndis")){
+                    final Enumeration<InetAddress> inetAdresses=intf.getInetAddresses();
+                    while (inetAdresses.hasMoreElements()){
+                        final InetAddress inetAddress=inetAdresses.nextElement();
+                        System.out.println(inetAddress.toString());
+                        //if(inetAddress.isLoopbackAddress()){
+                            return inetAddress.toString().replace("/","");
+                        //}
                     }
                 }
             }
         }catch(Exception e){e.printStackTrace();}
-        return false;
+        return null;
+    }
+
+    public static int getLastNumberOfIP(final String ip){
+        String[] parts = ip.split(".");
+        assert (parts.length==4);
+        return Integer.parseInt(parts[3]);
     }
 
 }

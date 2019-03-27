@@ -71,8 +71,6 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
         final ArrayList<String> dropdownValues= new ArrayList<>(Arrays.asList(c.getResources().getStringArray(textArrayResId)));
         dropdownValues.add(NOT_LOADED);
         dropdownValues.add(NOT_IN_SYNC);
-        //adapter=ArrayAdapter.createFromResource(
-        //        c, textArrayResId, android.R.layout.simple_spinner_item);
         adapter=new ArrayAdapter<String>(c,android.R.layout.simple_spinner_dropdown_item,dropdownValues);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -87,6 +85,7 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
     public boolean hasBeenUpdatedByUser(){
         return updatedByUser;
     }
+
     public String getCurrentValue(){
         if(spinner!=null){
             return spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
@@ -124,6 +123,9 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
                 //air and ground are in sync
                 inputViewSetEnabled(true);
                 setColor(Color.GREEN);
+            }else{
+                //ask the user if he would like to use the air or ground value
+
             }
         }else{
             inputViewUpdateText(value);

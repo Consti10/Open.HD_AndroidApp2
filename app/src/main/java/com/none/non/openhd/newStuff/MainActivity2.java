@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.none.non.openhd.R;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity2  extends AppCompatActivity implements TCPClient.ProcessMessage {
 
@@ -24,14 +25,12 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
     Context context;
 
     private final TCPClient client=new TCPClient(this);
+    private AtomicBoolean connectionEstablished=new AtomicBoolean(false);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context=this;
-
-        //IPResolver.resolveIP(context);
-
         setContentView(R.layout.activity_main2);
         //Note: call createList after setContentView !
         mSynchronizedSettings= createList();
@@ -42,18 +41,28 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         //Populate the layout with all synchronized settings values
         for(final ASetting setting: mSynchronizedSettings){
             tableLayout.addView(setting.tableRow);
-            //Disable the edit text - only as soon as it is initialized with its default currentValue we enable it
+            //Disable the edit text - only as soon as it is initialized with its default currentValue (confirmed by both ground and air) we enable it
             setting.reset();
         }
 
         bRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!connectionEstablished.get()){
+                    Toast.makeText(context, "Please connect your device first", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 //Disable all views
                 //send GET message for all synchronized settings
                 for(final ASetting setting:mSynchronizedSettings){
                     setting.reset();
                     client.sendMessage("GET "+setting.KEY);
+                    //Slow down for debugging
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -61,19 +70,25 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         bApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!connectionEstablished.get()){
+                    Toast.makeText(context, "Please connect your device first", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 final ArrayList<ASetting> modifiedSettings=new ArrayList<>();
                 for(final ASetting setting:mSynchronizedSettings){
                     if(setting.hasBeenUpdatedByUser()){
                         modifiedSettings.add(setting);
                     }
                 }
-                if(!modifiedSettings.isEmpty()){
+                if(modifiedSettings.isEmpty()){
+                    Toast.makeText(context,"Change settings first",Toast.LENGTH_SHORT).show();
+                }else{
                     StringBuilder messageToUser= new StringBuilder("Do you want to change these values:\n");
                     for(final ASetting setting: modifiedSettings){
                         messageToUser.append(setting.KEY).append(" ").append(setting.getCurrentValue()).append("\n");
                     }
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setCancelable(false);
+                    builder.setCancelable(true);
                     builder.setMessage(messageToUser.toString());
                     builder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -85,8 +100,6 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
                     });
                     AlertDialog dialog = builder.create();
                     dialog.show();
-                }else{
-                    Toast.makeText(context,"Change settings first",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -95,7 +108,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
     @Override
     protected void onResume(){
         super.onResume();
-        client.start();
+        client.start(context);
     }
 
 
@@ -103,6 +116,11 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
     protected void onPause(){
         super.onPause();
         client.stop();
+        try {
+            client.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -180,13 +198,25 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
 
     @Override
     public void connectionEstablished() {
-        for(final ASetting setting : mSynchronizedSettings){
+        connectionEstablished.set(true);
+        //for(final ASetting setting : mSynchronizedSettings){
             //client.sendMessage("GET "+setting.KEY);
-        }
+        //}
+        System.out.println("Connection established");
     }
 
     @Override
     public void connectionClosed(){
+        System.out.println("Connection closed");
+        connectionEstablished.set(false);
+        ((Activity)context).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for(final ASetting setting:mSynchronizedSettings){
+                    setting.reset();
+                }
+            }
+        });
     }
 
 
@@ -226,6 +256,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         //OSD
         //list.add(new ASetting("Copter",this,R.array.CopterArray));
         //list.add(new ASetting("Imperial",this,R.array.ImperialArray));
+        //list.add(new ASetting("CELLS",this));
         //Special
         list.add(new ASetting("txpowerA",this));
         list.add(new ASetting("txpowerR",this));
@@ -247,7 +278,6 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         list.add(new ASetting("Camera3ValueMax",this));
         list.add(new ASetting("Camera4ValueMin",this));
         list.add(new ASetting("Camera4ValueMax",this));
-        list.add(new ASetting("CELLS",this));
         list.add(new ASetting("EncryptionOrRange",this, R.array.EncryptionOrRangeArray));
         list.add(new ASetting("IsBandSwicherEnabled",this));
         list.add(new ASetting("Bandwidth",this));
