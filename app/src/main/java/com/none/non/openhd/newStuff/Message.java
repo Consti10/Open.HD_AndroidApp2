@@ -43,6 +43,10 @@ public class Message {
         return BuildMessage("G","HELLO_OK","");
     }
 
+    public static String BuildMessageHELLO(){
+        return BuildMessage("GA","HELLO","");
+    }
+
     private static String BuildMessage(final String dst,final String cmd,final String data){
         return dst+" "+cmd+" "+data;
     }

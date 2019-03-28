@@ -23,6 +23,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
 
     Button bRefresh;
     Button bApply;
+    Button bPing;
     Switch sSyncGroundOnly;
     Context context;
 
@@ -39,6 +40,16 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         bRefresh=findViewById(R.id.buttonRefresh);
         bApply=findViewById(R.id.buttonApply);
         sSyncGroundOnly=findViewById(R.id.switchOnlySyncGround);
+        bPing=findViewById(R.id.buttonPing);
+        bPing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!connectionEstablished.get()){
+                    Toast.makeText(context,"Connect first",Toast.LENGTH_SHORT).show();
+                }
+                client.sendMessage(Message.BuildMessageHELLO());
+            }
+        });
 
         final TableLayout tableLayout=findViewById(R.id.tableLayout);
         //Populate the layout with all synchronized settings values
@@ -174,6 +185,10 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         switch (message.cmd) {
             case "HELLO":{
                 client.sendMessage(Message.BuildMessageHELLO_OK());
+                break;
+            }
+            case "HELLO_OK":{
+                makeToast(message.src+" "+message.cmd);
                 break;
             }
             case "GET_OK": {
