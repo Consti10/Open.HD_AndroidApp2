@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
 
     Button bRefresh;
     Button bApply;
+    Switch sSyncGroundOnly;
     Context context;
 
     private final TCPClient client=new TCPClient(this);
@@ -36,6 +38,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         mSynchronizedSettings= createList();
         bRefresh=findViewById(R.id.buttonRefresh);
         bApply=findViewById(R.id.buttonApply);
+        sSyncGroundOnly=findViewById(R.id.switchOnlySyncGround);
 
         final TableLayout tableLayout=findViewById(R.id.tableLayout);
         //Populate the layout with all synchronized settings values
@@ -56,13 +59,13 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
                 //send GET message for all synchronized settings
                 for(final ASetting setting:mSynchronizedSettings){
                     setting.reset();
-                    client.sendMessage("GET "+setting.KEY);
+                    client.sendMessage(Message.BuildMessageGET(sSyncGroundOnly.isChecked(),setting.KEY));
                     //Slow down for debugging
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    //try {
+                    //    Thread.sleep(2000);
+                    //} catch (InterruptedException e) {
+                    //   e.printStackTrace();
+                    //}
                 }
             }
         });
@@ -93,7 +96,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
                     builder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             for(final ASetting setting:modifiedSettings){
-                                client.sendMessage("CHANGE "+setting.KEY+"="+setting.getCurrentValue());
+                                client.sendMessage(Message.BuildMessageCHANGE(sSyncGroundOnly.isChecked(),setting.KEY,setting.getCurrentValue()));
                                 setting.reset();
                             }
                         }
@@ -142,7 +145,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
                 ((Activity)context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setting.processMessageGET_OK(ground,value);
+                        setting.processMessageGET_OK(ground,value,sSyncGroundOnly.isChecked());
                     }
                 });
             }
@@ -157,7 +160,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
                 ((Activity)context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setting.processMessageCHANGE_OK(ground,value);
+                        setting.processMessageCHANGE_OK(ground,value,sSyncGroundOnly.isChecked());
                     }
                 });
             }
@@ -170,23 +173,15 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         final Message message=new Message(messageData);
         switch (message.cmd) {
             case "HELLO":{
-                client.sendMessage("HELLO_OK");
+                client.sendMessage(Message.BuildMessageHELLO_OK());
                 break;
             }
-            case "GET_OK_G": {
-                processMessageGET_OK(true,message.dataKey,message.dataValue);
+            case "GET_OK": {
+                processMessageGET_OK(message.ground(),message.dataKey,message.dataValue);
                 break;
             }
-            case "GET_OK_A": {
-                processMessageGET_OK(false,message.dataKey,message.dataValue);
-                break;
-            }
-            case "CHANGE_OK_G": {
-                processMessageCHANGE_OK(true,message.dataKey,message.dataValue);
-                break;
-            }
-            case "CHANGE_OK_A": {
-                processMessageCHANGE_OK(false,message.dataKey,message.dataValue);
+            case "CHANGE_OK": {
+                processMessageCHANGE_OK(message.ground(),message.dataKey,message.dataValue);
                 break;
             }
             default:
@@ -222,7 +217,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
 
     private ArrayList<ASetting> createList(){
         ArrayList<ASetting> list=new ArrayList<>();
-        list.add(new ASetting("FC_RC_BAUDRATE",this, R.array.RateArray));
+        list.add(new ASetting("FC_RC_BAUDRATE",this, R.array.FC_RC_BAUDRATE));
         list.add(new ASetting("FC_TELEMETRY_BAUDRATE",this));
         list.add(new ASetting("FC_MSP_BAUDRATE",this));
         list.add(new ASetting("FREQ",this,R.array.FREQ));

@@ -1,13 +1,11 @@
 package com.none.non.openhd;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 //import android.support.design.widget.FloatingActionButton;
 //import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,16 +20,12 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketAddress;
 
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Toast;
-
-
-import org.w3c.dom.Text;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
@@ -154,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //spinnerFC_RC_BAUDRATE
         SpinnerFC_RC_BAUDRATE = (Spinner) findViewById(R.id.spinnerFC_RC_BAUDRATE);
         adapterFC_RC_BAUDRATE = ArrayAdapter.createFromResource(
-                this, R.array.RateArray, android.R.layout.simple_spinner_item);
+                this, R.array.FC_RC_BAUDRATE, android.R.layout.simple_spinner_item);
         adapterFC_RC_BAUDRATE.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         SpinnerFC_RC_BAUDRATE.setAdapter(adapterFC_RC_BAUDRATE);
         SpinnerFC_RC_BAUDRATE.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -182,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //SpinnerFC_TELEMETRY_BAUDRATE
         SpinnerFC_TELEMETRY_BAUDRATE = (Spinner) findViewById(R.id.spinnerFC_TELEMETRY_BAUDRATE);
         adapterFC_TELEMETRY_BAUDRATE = ArrayAdapter.createFromResource(
-                this, R.array.RateArray, android.R.layout.simple_spinner_item);
+                this, R.array.FC_RC_BAUDRATE, android.R.layout.simple_spinner_item);
         adapterFC_TELEMETRY_BAUDRATE.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         SpinnerFC_TELEMETRY_BAUDRATE.setAdapter(adapterFC_TELEMETRY_BAUDRATE);
         SpinnerFC_TELEMETRY_BAUDRATE.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -210,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //spinnerFC_MSP_BAUDRATE
         SpinnerFC_MSP_BAUDRATE = (Spinner) findViewById(R.id.spinnerFC_MSP_BAUDRATE);
         adapterFC_MSP_BAUDRATE = ArrayAdapter.createFromResource(
-                this, R.array.RateArray, android.R.layout.simple_spinner_item);
+                this, R.array.FC_RC_BAUDRATE, android.R.layout.simple_spinner_item);
         adapterFC_MSP_BAUDRATE.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         SpinnerFC_MSP_BAUDRATE.setAdapter(adapterFC_MSP_BAUDRATE);
         SpinnerFC_MSP_BAUDRATE.setOnItemSelectedListener(new OnItemSelectedListener() {

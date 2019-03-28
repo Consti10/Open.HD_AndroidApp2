@@ -1,9 +1,11 @@
 package com.none.non.openhd.newStuff;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.ColorInt;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -14,9 +16,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.none.non.openhd.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,7 +33,7 @@ import java.util.List;
 public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher {
     private static final String NOT_LOADED="Setting not loaded";
     private static final String NOT_IN_SYNC="Not in sync";
-
+    private final Context context;
     public final String KEY;
     //Text view holding key
     private final TextView textView;
@@ -37,19 +43,22 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
     //(that's why there are 2 constructors)
     private final Spinner spinner;
     private final ArrayAdapter<String> adapter; //null when not spinner
+    final List<String> VALID_DROPDOWN_VALUES;
     private final EditText editText;
     public final TableRow tableRow;
     private final UserChangedText userChangedText=new UserChangedText() {
         @Override
         public void onTextChanged(String newText) {
-            System.out.println("user changed text"+newText+KEY);
-            setColor(Color.RED);
+            System.out.println("user changed text"+KEY+newText);
+            inputViewSetColor(Color.RED);
             updatedByUser=true;
         }
     };
     private boolean updatedByUser=false;
+    private boolean errornousValue=false;
 
     public ASetting(final String key, final Context c){
+        context=c;
         this.KEY =key;
         textView=new TextView(c);
         textView.setText(KEY);
@@ -57,6 +66,7 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
         editText.setInputType(InputType.TYPE_CLASS_TEXT);
         spinner=null;
         adapter=null;
+        VALID_DROPDOWN_VALUES=null;
         tableRow=new TableRow(c);
         tableRow.addView(textView);
         tableRow.addView(editText);
@@ -64,14 +74,14 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
     }
 
     public ASetting(final String key,final Context c,@ArrayRes int textArrayResId){
+        context=c;
         this.KEY =key;
         textView=new TextView(c);
         textView.setText(KEY);
         spinner=new Spinner(c);
-        final ArrayList<String> dropdownValues= new ArrayList<>(Arrays.asList(c.getResources().getStringArray(textArrayResId)));
-        dropdownValues.add(NOT_LOADED);
-        dropdownValues.add(NOT_IN_SYNC);
-        adapter=new ArrayAdapter<String>(c,android.R.layout.simple_spinner_dropdown_item,dropdownValues);
+        VALID_DROPDOWN_VALUES= Collections.unmodifiableList(Arrays.asList(c.getResources().getStringArray(textArrayResId)));
+        adapter=new ArrayAdapter<String>(c,android.R.layout.simple_spinner_dropdown_item);
+        adapter.addAll(new ArrayList<String>(VALID_DROPDOWN_VALUES));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         editText=null;
@@ -94,42 +104,96 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
     }
     public void reset(){
         updatedByUser=false;
-        setColor(Color.RED);
+        inputViewSetColor(Color.RED);
         inputViewUpdateText(NOT_LOADED);
         inputViewSetEnabled(false);
+        errornousValue=false;
     }
 
-    public void processMessageGET_OK(final boolean ground,final String value){
+    public void processMessageGET_OK(final boolean ground,final String value,final boolean syncGroundOnly){
         //System.out.println("Process get_ok "+KEY+" "+ground+" "+value);
         //System.out.println("Curr"+getCurrentValue());
-        if(!ground){
-            if(value.equals(getCurrentValue())){
-                //air and ground are in sync
+        //In this case we don't wait for the value from the air pi
+        if(errornousValue){
+            return;
+        }
+        if(ground){
+            if(syncGroundOnly){
+                inputViewUpdateText(value);
+                inputViewSetColor(Color.GREEN);
                 inputViewSetEnabled(true);
-                setColor(Color.GREEN);
             }else{
-                inputViewUpdateText(NOT_IN_SYNC);
+                inputViewUpdateText(value);
+                inputViewSetColor(Color.YELLOW);
                 inputViewSetEnabled(false);
             }
         }else{
-            inputViewUpdateText(value);
-            setColor(Color.YELLOW);
-        }
-    }
-
-    public void processMessageCHANGE_OK(final boolean ground,final String value){
-        if(!ground){
+            //message from air pi (comes always after ground pi)
             if(value.equals(getCurrentValue())){
                 //air and ground are in sync
                 inputViewSetEnabled(true);
-                setColor(Color.GREEN);
+                inputViewSetColor(Color.GREEN);
             }else{
                 //ask the user if he would like to use the air or ground value
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setCancelable(false);
+                final String valueGround=getCurrentValue();
+                final String message="Air and ground are not in sync. Which value do you want to keep ?\n"+
+                        KEY+"=\n"+
+                        "GROUND: "+valueGround+"\n" +
+                        "AIR: "+value+"\n";
+                builder.setMessage(message);
+                builder.setPositiveButton("Ground", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        updatedByUser=true;
+                        inputViewUpdateText(valueGround);
+                        inputViewSetEnabled(true);
+                        inputViewSetColor(Color.GREEN);
 
+                    }
+                });
+                builder.setNegativeButton("AIR", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        updatedByUser=true;
+                        inputViewUpdateText(value);
+                        inputViewSetEnabled(true);
+                        inputViewSetColor(Color.GREEN);
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                inputViewUpdateText(NOT_IN_SYNC);
+                inputViewSetEnabled(false);
+                //Toast.makeText(context,"Not in sync"+getCurrentValue()+" | "+value,Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public void processMessageCHANGE_OK(final boolean ground,final String value,final boolean syncGroundOnly){
+        if(errornousValue){
+            return;
+        }
+        if(ground){
+            if(syncGroundOnly){
+                inputViewUpdateText(value);
+                inputViewSetColor(Color.GREEN);
+                inputViewSetEnabled(true);
+            }else{
+                inputViewUpdateText(value);
+                inputViewSetColor(Color.YELLOW);
+                inputViewSetEnabled(false);
             }
         }else{
-            inputViewUpdateText(value);
-            setColor(Color.YELLOW);
+            if(value.equals(getCurrentValue())){
+                //air and ground are in sync
+                inputViewSetEnabled(true);
+                inputViewSetColor(Color.GREEN);
+            }else{
+                inputViewUpdateText(NOT_IN_SYNC);
+                inputViewSetEnabled(false);
+                Toast.makeText(context,"Not in sync"+getCurrentValue()+" | "+value,Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -141,7 +205,7 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
         }
     }
 
-    private void setColor(@ColorInt int color){
+    private void inputViewSetColor(@ColorInt int color){
         if(spinner!=null){
             spinner.setBackgroundColor(color);
         }else{
@@ -160,9 +224,24 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
             editText.addTextChangedListener(this);
         }else{
             spinner.setOnItemSelectedListener(null);
-            int spinnerPosition=adapter.getPosition(value);
-            if(spinnerPosition!=-1){
-                spinner.setSelection(spinnerPosition,false);//animate==false important else the listener gets notified ! (WTF android !!)
+            if(value.equals(NOT_IN_SYNC)|| value.equals(NOT_LOADED)){
+                adapter.clear();
+                adapter.add(value);
+                spinner.setSelection(0,false);
+            }else{
+                adapter.clear();
+                adapter.addAll(new ArrayList<String>(VALID_DROPDOWN_VALUES));
+                int spinnerPosition=adapter.getPosition(value);
+                if(spinnerPosition!=-1){
+                    spinner.setSelection(spinnerPosition,false);//animate==false important else the listener gets notified ! (WTF android !!)
+                }else{
+                    Toast.makeText(context,"Invalid value: "+KEY+"="+value,Toast.LENGTH_LONG).show();
+                    errornousValue=true;
+                    adapter.clear();
+                    adapter.add("INVALID"+value);
+                    spinner.setAdapter(adapter);
+                    spinner.setSelection(0,false);
+                }
             }
             spinner.setOnItemSelectedListener(this);
         }

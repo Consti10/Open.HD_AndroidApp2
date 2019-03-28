@@ -1,10 +1,17 @@
 <resources>
     <string name="app_name">OpenHD</string>
-
-
-    //ChangeSettingsWFBC
-
     <string name="FreqSelect">Settings</string>
+
+    <string-array name="FC_RC_BAUDRATE">
+        <item>1200</item>
+        <item>2400</item>
+        <item>4800</item>
+        <item>19200</item>
+        <item>38400</item>
+        <item>57600</item>
+        <item>115200</item>
+    </string-array>
+
 
     <string-array name="CopterArray">
         <item>true</item>
@@ -14,16 +21,6 @@
     <string-array name="ImperialArray">
         <item>true</item>
         <item>false</item>
-    </string-array>
-
-    <string-array name="RateArray">
-        <item>1200</item>
-        <item>2400</item>
-        <item>4800</item>
-        <item>19200</item>
-        <item>38400</item>
-        <item>57600</item>
-        <item>115200</item>
     </string-array>
 
 
@@ -147,6 +144,7 @@
         <item>mavlink</item>
         <item>disabled</item>
     </string-array>
+
 
 
 </resources>
