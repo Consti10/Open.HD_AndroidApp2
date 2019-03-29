@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="SpinnerItemStyle_RED" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:textColor">#FF3E00</item>
+        <item name="android:color">#2196F3</item>
+    </style>
+
 </resources>

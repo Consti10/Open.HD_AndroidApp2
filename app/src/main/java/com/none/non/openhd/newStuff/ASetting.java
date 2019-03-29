@@ -2,10 +2,18 @@ package com.none.non.openhd.newStuff;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.content.res.Resources.Theme;
 import android.graphics.Color;
-import android.support.annotation.ArrayRes;
-import android.support.annotation.ColorInt;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.ArrayRes;
+import androidx.annotation.ColorInt;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.view.ViewCompat;
+
+import android.graphics.PorterDuff;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -36,13 +44,14 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
     private final Context context;
     public final String KEY;
     //Text view holding key
-    private final TextView textView;
+    private final AppCompatTextView textView;
     //There are 2 input methods:
     //EditText or Spinner
     //one of them is always null while the other one is active
     //(that's why there are 2 constructors)
-    private final Spinner spinner;
-    private final ArrayAdapter<String> adapter; //null when not spinner
+    private final AppCompatSpinner spinner;
+    //Adapter is not final because we need to change the text color of it
+    private ArrayAdapter<String> adapter; //null when not spinner
     final List<String> VALID_DROPDOWN_VALUES;
     private final EditText editText;
     public final TableRow tableRow;
@@ -60,7 +69,7 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
     public ASetting(final String key, final Context c){
         context=c;
         this.KEY =key;
-        textView=new TextView(c);
+        textView=new AppCompatTextView(c);
         textView.setText(KEY);
         editText=new EditText(c);
         editText.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -76,11 +85,11 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
     public ASetting(final String key,final Context c,@ArrayRes int textArrayResId){
         context=c;
         this.KEY =key;
-        textView=new TextView(c);
+        textView=new AppCompatTextView(c);
         textView.setText(KEY);
-        spinner=new Spinner(c);
+        spinner=new AppCompatSpinner(c);
         VALID_DROPDOWN_VALUES= Collections.unmodifiableList(Arrays.asList(c.getResources().getStringArray(textArrayResId)));
-        adapter=new ArrayAdapter<String>(c,android.R.layout.simple_spinner_dropdown_item);
+        adapter=new ArrayAdapter<String>(c,R.layout.spinner_black);
         adapter.addAll(new ArrayList<String>(VALID_DROPDOWN_VALUES));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -89,6 +98,10 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
         tableRow.addView(textView);
         tableRow.addView(spinner);
         spinner.setOnItemSelectedListener(this);
+    }
+
+    public TextView getKeyView(){
+        return textView;
     }
 
 
@@ -124,7 +137,7 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
                 inputViewSetEnabled(true);
             }else{
                 inputViewUpdateText(value);
-                inputViewSetColor(Color.YELLOW);
+                inputViewSetColor(Color.BLUE);
                 inputViewSetEnabled(false);
             }
         }else{
@@ -179,9 +192,10 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
                 inputViewUpdateText(value);
                 inputViewSetColor(Color.GREEN);
                 inputViewSetEnabled(true);
+                updatedByUser=false;
             }else{
                 inputViewUpdateText(value);
-                inputViewSetColor(Color.YELLOW);
+                inputViewSetColor(Color.BLUE);
                 inputViewSetEnabled(false);
             }
         }else{
@@ -189,10 +203,12 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
                 //air and ground are in sync
                 inputViewSetEnabled(true);
                 inputViewSetColor(Color.GREEN);
+                updatedByUser=false;
             }else{
                 inputViewUpdateText(NOT_IN_SYNC);
                 inputViewSetEnabled(false);
                 Toast.makeText(context,"Not in sync"+getCurrentValue()+" | "+value,Toast.LENGTH_LONG).show();
+                updatedByUser=false;
             }
         }
     }
@@ -206,8 +222,40 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
     }
 
     private void inputViewSetColor(@ColorInt int color){
+        //textView.setTextColor(color);
         if(spinner!=null){
-            spinner.setBackgroundColor(color);
+            //ViewCompat.setBackgroundTintList(spinner, ColorStateList.valueOf(Color.RED));
+            //spinner.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+            //adapter.setDropDownViewResource(R.layout.spinner_red);
+            if(color==Color.BLUE){
+                //Use a light blue instead for better readability
+                spinner.setBackgroundColor(Color.argb(255,100,100,255));
+            }else{
+                spinner.setBackgroundColor(color);
+            }
+            //adapter.setDropDownViewResource(R.layout.spinner_red);
+            //spinner.
+            //spinner.getBackground().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+            //spinner.getBackground()
+            /*spinner.setOnItemSelectedListener(null);
+            switch (color){
+                case Color.RED:
+                    adapter=new ArrayAdapter<String>(context,R.layout.spinner_red);
+                    break;
+                case Color.BLUE:
+                    adapter=new ArrayAdapter<String>(context,R.layout.spinner_blue);
+                    break;
+                case Color.GREEN:
+                    adapter=new ArrayAdapter<String>(context,R.layout.spinner_green);
+                    break;
+                default:
+                    System.out.println("BBB");
+                    break;
+            }
+            adapter.addAll(new ArrayList<String>(VALID_DROPDOWN_VALUES));
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(this);*/
         }else{
             editText.setTextColor(color);
         }
@@ -235,7 +283,7 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
                 if(spinnerPosition!=-1){
                     spinner.setSelection(spinnerPosition,false);//animate==false important else the listener gets notified ! (WTF android !!)
                 }else{
-                    Toast.makeText(context,"Invalid value: "+KEY+"="+value,Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context,"Invalid value: "+KEY+"="+value,Toast.LENGTH_LONG).show();
                     errornousValue=true;
                     adapter.clear();
                     adapter.add("INVALID"+value);
@@ -267,6 +315,12 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         final String newText=parent.getItemAtPosition(position).toString();
         userChangedText.onTextChanged(newText);
+        //((TextView) view).setTextColor(Color.YELLOW);
+        /*TextView selectedText = (TextView) parent.getChildAt(0);
+        if (selectedText != null) {
+            selectedText.setTextColor(Color.RED);
+        }*/
+
     }
 
     @Override

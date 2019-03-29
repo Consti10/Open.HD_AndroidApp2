@@ -146,5 +146,14 @@
     </string-array>
 
 
+    <string-array name="Y_OR_N">
+        <item>Y</item>
+        <item>N</item>
+    </string-array>
+
+    <string-array name="true_OR_false">
+        <item>true</item>
+        <item>false</item>
+    </string-array>
 
 </resources>

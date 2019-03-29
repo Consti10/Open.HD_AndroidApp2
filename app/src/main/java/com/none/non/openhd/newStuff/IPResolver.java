@@ -58,14 +58,8 @@ public class IPResolver {
             for(int i=0;i<256;i++){
                 ipsToTest.add(i);
             }
-            //final String loopbackAddress=IsConnected.getUSBTetheringLoopbackAddress();
-            //System.out.println("Loopback is:"+loopbackAddress);
-            //remove loopback (is always 192.168.42.129)
             ipsToTest.removeAll(Collections.singletonList(129));
-
-            //final List<String> validIPs=pingAllIPs(ipsToTest);
             final List<String> validIPs=pingAllIPsMultiThreaded(ipsToTest,8);
-
             if(validIPs.size()>0){
                 return validIPs.get(0);
             }
@@ -111,7 +105,7 @@ public class IPResolver {
             try {
                 worker.join();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
                 worker.interrupt();
             }
         }
@@ -122,7 +116,7 @@ public class IPResolver {
 
     //blocks until either all ips have been tested or when the calling thread is interrupted
     private static List<String> pingAllIPs(final List<Integer> ipsToPing){
-        ArrayList<String> reachableIPs=new ArrayList<>();
+        final ArrayList<String> reachableIPs=new ArrayList<>();
         for(int ipFourthElement:ipsToPing){
             if(Thread.currentThread().isInterrupted()){
                 return reachableIPs;
@@ -134,8 +128,6 @@ public class IPResolver {
                 if(reachable){
                     //IP found !
                     reachableIPs.add(IP);
-                }else{
-                    //System.out.println("couldnt reach"+IP);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

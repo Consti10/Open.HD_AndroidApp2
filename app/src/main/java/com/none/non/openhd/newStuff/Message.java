@@ -43,8 +43,8 @@ public class Message {
         return BuildMessage("G","HELLO_OK","");
     }
 
-    public static String BuildMessageHELLO(){
-        return BuildMessage("GA","HELLO","");
+    public static String BuildMessageHELLO(final boolean groundOnly){
+        return BuildMessage(groundOnly? "G":"GA","HELLO","");
     }
 
     private static String BuildMessage(final String dst,final String cmd,final String data){
