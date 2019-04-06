@@ -81,7 +81,7 @@ public class SettingsFactory {
         return list;
     }
 
-    public static ArrayList<ASetting> OPENHD_OSD(final Context c){
+    public static ArrayList<ASetting> OPENHD_OSD_Settings(final Context c){
         ArrayList<ASetting> list=new ArrayList<>();
         list.add(new ASetting("IMPERIAL",c,R.array.true_OR_false));
         list.add(new ASetting("COPTER",c,R.array.true_OR_false));

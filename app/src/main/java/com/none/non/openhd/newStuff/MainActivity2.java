@@ -19,12 +19,11 @@ import com.google.android.material.tabs.TabLayout;
 import com.none.non.openhd.R;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity2  extends AppCompatActivity implements TCPClient.ProcessMessage {
 
-    //ArrayList<ASetting> mSynchronizedSettings;
+    //ArrayList<ASetting> mSelectedSyncSettings;
 
     Button bRefresh;
     Button bApply;
@@ -33,7 +32,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
     TableLayout tableLayout;
     Context context;
     ArrayList<ArrayList<ASetting>> ALL_SYNCHRONIZED_SETTINGS;
-    ArrayList<ASetting> mSynchronizedSettings;
+    ArrayList<ASetting> mSelectedSyncSettings;
 
     private final TCPClient client=new TCPClient(this);
     private AtomicBoolean connectionEstablished=new AtomicBoolean(false);
@@ -48,7 +47,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         ALL_SYNCHRONIZED_SETTINGS=new ArrayList<>();
         ALL_SYNCHRONIZED_SETTINGS.add(SettingsFactory.OPENHD_SETTINGS_1(this));
         ALL_SYNCHRONIZED_SETTINGS.add(SettingsFactory.OPENHD_SETTINGS_2(this));
-        ALL_SYNCHRONIZED_SETTINGS.add(SettingsFactory.OPENHD_OSD(this));
+        ALL_SYNCHRONIZED_SETTINGS.add(SettingsFactory.OPENHD_OSD_Settings(this));
         for(final ArrayList<ASetting> list:ALL_SYNCHRONIZED_SETTINGS){
             for(final ASetting setting:list){
                 setting.getKeyView().setOnTouchListener(new View.OnTouchListener() {
@@ -64,10 +63,10 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
                 });
             }
         }
-        mSynchronizedSettings=ALL_SYNCHRONIZED_SETTINGS.get(0);
+        mSelectedSyncSettings =ALL_SYNCHRONIZED_SETTINGS.get(0);
         tableLayout=findViewById(R.id.tableLayout);
         //Populate the layout with all synchronized settings values
-        for(final ASetting setting: mSynchronizedSettings){
+        for(final ASetting setting: mSelectedSyncSettings){
             tableLayout.addView(setting.tableRow);
             //Disable the edit text - only as soon as it is initialized with its default currentValue (confirmed by both ground and air) we enable it
             setting.reset();
@@ -77,9 +76,9 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 tableLayout.removeAllViews();
-                mSynchronizedSettings=ALL_SYNCHRONIZED_SETTINGS.get(tab.getPosition());
+                mSelectedSyncSettings =ALL_SYNCHRONIZED_SETTINGS.get(tab.getPosition());
                 //Populate the layout with all synchronized settings values
-                for(final ASetting setting: mSynchronizedSettings){
+                for(final ASetting setting: mSelectedSyncSettings){
                     tableLayout.addView(setting.tableRow);
                     //Disable the edit text - only as soon as it is initialized with its default currentValue (confirmed by both ground and air) we enable it
                     setting.reset();
@@ -114,7 +113,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
                 }
                 //Disable all views
                 //send GET message for all synchronized settings
-                for(final ASetting setting:mSynchronizedSettings){
+                for(final ASetting setting: mSelectedSyncSettings){
                     setting.reset();
                     client.sendMessage(Message.BuildMessageGET(sSyncGroundOnly.isChecked(),setting.KEY));
                 }
@@ -129,7 +128,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
                     return;
                 }
                 final ArrayList<ASetting> modifiedSettings=new ArrayList<>();
-                for(final ASetting setting:mSynchronizedSettings){
+                for(final ASetting setting: mSelectedSyncSettings){
                     if(setting.hasBeenUpdatedByUser()){
                         modifiedSettings.add(setting);
                     }
@@ -183,7 +182,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
 
     private void processMessageGET_OK(final boolean ground,final String key,final String value){
         //find the matching setting and call its processing function
-        for(final ASetting setting:mSynchronizedSettings){
+        for(final ASetting setting: mSelectedSyncSettings){
             if(key.equals(setting.KEY)){
                 setting.processMessageGET_OK(ground,value,sSyncGroundOnly.isChecked());
                 break;
@@ -193,7 +192,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
 
     private void processMessageCHANGE_OK(final boolean ground,final String key,final String value){
         //find the matching setting and call its processing function
-        for(final ASetting setting:mSynchronizedSettings){
+        for(final ASetting setting: mSelectedSyncSettings){
             if(key.equals(setting.KEY)){
                 setting.processMessageCHANGE_OK(ground,value,sSyncGroundOnly.isChecked());
                 break;
@@ -237,7 +236,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
     @Override
     public void connectionEstablished() {
         connectionEstablished.set(true);
-        //for(final ASetting setting : mSynchronizedSettings){
+        //for(final ASetting setting : mSelectedSyncSettings){
             //client.sendMessage("GET "+setting.KEY);
         //}
         System.out.println("Connection established");
@@ -250,7 +249,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         ((Activity)context).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                for(final ASetting setting:mSynchronizedSettings){
+                for(final ASetting setting: mSelectedSyncSettings){
                     setting.reset();
                 }
             }

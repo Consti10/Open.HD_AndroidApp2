@@ -48,16 +48,21 @@ public class TCPClient {
                     BufferedReader inputFromServer;
                     try {
                         clientSocket = new Socket(IP, PORT);
-                        clientSocket.setSoTimeout(100);
+                        clientSocket.setSoTimeout(500);
                         outToServer = new DataOutputStream(clientSocket.getOutputStream());
                         inputFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                         mSendQueue.clear();
-                    }catch (IOException ignored){
+                        clientSocket.setSoTimeout(100);
+                    }catch (IOException e){
+                        e.printStackTrace();
+                        //avoid spamming the server with requests, wait a bit before trying again
+                        try { Thread.sleep(1000); } catch (InterruptedException unused){}
                         continue;
                     }
                     mProcessMessage.connectionEstablished();
                     //Now receive and send data until an IO exception occurs or the thread is interrupted
                     try {
+                        long lastMessageFromServer=System.currentTimeMillis();
                         while (!mTCPThread.isInterrupted()) {
                             try {
                                 String msg;
@@ -75,9 +80,14 @@ public class TCPClient {
                             try {
                                 String line;
                                 while((line=inputFromServer.readLine())!=null){
+                                    lastMessageFromServer=System.currentTimeMillis();
                                     mProcessMessage.processMessage(line);
                                 }
                             } catch (SocketTimeoutException ignored) {
+                            }
+                            if(System.currentTimeMillis()-lastMessageFromServer>5000){
+                                System.out.println("No message from server >5000ms.Exit");
+                                break;
                             }
                         }
                     }catch (IOException e){
