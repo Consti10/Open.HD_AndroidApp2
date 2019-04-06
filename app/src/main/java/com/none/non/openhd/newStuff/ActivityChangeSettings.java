@@ -21,9 +21,9 @@ import com.none.non.openhd.R;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class MainActivity2  extends AppCompatActivity implements TCPClient.ProcessMessage {
+public class ActivityChangeSettings extends AppCompatActivity implements TCPClient.ProcessMessage {
 
-    //ArrayList<ASetting> mSelectedSyncSettings;
+    //ArrayList<AbstractSetting> mSelectedSyncSettings;
 
     Button bRefresh;
     Button bApply;
@@ -31,10 +31,10 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
     Switch sSyncGroundOnly;
     TableLayout tableLayout;
     Context context;
-    ArrayList<ArrayList<ASetting>> ALL_SYNCHRONIZED_SETTINGS;
-    ArrayList<ASetting> mSelectedSyncSettings;
+    ArrayList<ArrayList<AbstractSetting>> ALL_SYNCHRONIZED_SETTINGS;
+    ArrayList<AbstractSetting> mSelectedSyncSettings;
 
-    private final TCPClient client=new TCPClient(this);
+    private final TCPClient client=new TCPClient(this,this);
     private AtomicBoolean connectionEstablished=new AtomicBoolean(false);
 
     @SuppressLint("ClickableViewAccessibility")
@@ -42,20 +42,18 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context=this;
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_change_settings);
         //Note: call OPENHD_SETTINGS_1 after setContentView !
         ALL_SYNCHRONIZED_SETTINGS=new ArrayList<>();
         ALL_SYNCHRONIZED_SETTINGS.add(SettingsFactory.OPENHD_SETTINGS_1(this));
         ALL_SYNCHRONIZED_SETTINGS.add(SettingsFactory.OPENHD_SETTINGS_2(this));
         ALL_SYNCHRONIZED_SETTINGS.add(SettingsFactory.OPENHD_OSD_Settings(this));
-        for(final ArrayList<ASetting> list:ALL_SYNCHRONIZED_SETTINGS){
-            for(final ASetting setting:list){
+        for(final ArrayList<AbstractSetting> list:ALL_SYNCHRONIZED_SETTINGS){
+            for(final AbstractSetting setting:list){
                 setting.getKeyView().setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
-                        if(!connectionEstablished.get()){
-                            Toast.makeText(context,"Connect first",Toast.LENGTH_SHORT).show();
-                        }else{
+                        if(checkConnectedAndMessageUser()){
                             client.sendMessage(Message.BuildMessageGET(sSyncGroundOnly.isChecked(),setting.KEY));
                         }
                         return false;
@@ -66,7 +64,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         mSelectedSyncSettings =ALL_SYNCHRONIZED_SETTINGS.get(0);
         tableLayout=findViewById(R.id.tableLayout);
         //Populate the layout with all synchronized settings values
-        for(final ASetting setting: mSelectedSyncSettings){
+        for(final AbstractSetting setting: mSelectedSyncSettings){
             tableLayout.addView(setting.tableRow);
             //Disable the edit text - only as soon as it is initialized with its default currentValue (confirmed by both ground and air) we enable it
             setting.reset();
@@ -78,7 +76,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
                 tableLayout.removeAllViews();
                 mSelectedSyncSettings =ALL_SYNCHRONIZED_SETTINGS.get(tab.getPosition());
                 //Populate the layout with all synchronized settings values
-                for(final ASetting setting: mSelectedSyncSettings){
+                for(final AbstractSetting setting: mSelectedSyncSettings){
                     tableLayout.addView(setting.tableRow);
                     //Disable the edit text - only as soon as it is initialized with its default currentValue (confirmed by both ground and air) we enable it
                     setting.reset();
@@ -98,37 +96,32 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
         bPing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!connectionEstablished.get()){
-                    Toast.makeText(context,"Connect first",Toast.LENGTH_SHORT).show();
+                if(checkConnectedAndMessageUser()){
+                    client.sendMessage(Message.BuildMessageHELLO(sSyncGroundOnly.isChecked()));
                 }
-                client.sendMessage(Message.BuildMessageHELLO(sSyncGroundOnly.isChecked()));
             }
         });
         bRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!connectionEstablished.get()){
-                    Toast.makeText(context, "Please connect your device first", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                //Disable all views
-                //send GET message for all synchronized settings
-                for(final ASetting setting: mSelectedSyncSettings){
-                    setting.reset();
-                    client.sendMessage(Message.BuildMessageGET(sSyncGroundOnly.isChecked(),setting.KEY));
+                if(checkConnectedAndMessageUser()){
+                    //Disable all views
+                    //send GET message for all synchronized settings
+                    for(final AbstractSetting setting: mSelectedSyncSettings){
+                        setting.reset();
+                        client.sendMessage(Message.BuildMessageGET(sSyncGroundOnly.isChecked(),setting.KEY));
+                    }
                 }
             }
         });
-
         bApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!connectionEstablished.get()){
-                    Toast.makeText(context, "Please connect your device first", Toast.LENGTH_SHORT).show();
+                if(!checkConnectedAndMessageUser()){
                     return;
                 }
-                final ArrayList<ASetting> modifiedSettings=new ArrayList<>();
-                for(final ASetting setting: mSelectedSyncSettings){
+                final ArrayList<AbstractSetting> modifiedSettings=new ArrayList<>();
+                for(final AbstractSetting setting: mSelectedSyncSettings){
                     if(setting.hasBeenUpdatedByUser()){
                         modifiedSettings.add(setting);
                     }
@@ -137,7 +130,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
                     Toast.makeText(context,"Change settings first",Toast.LENGTH_SHORT).show();
                 }else{
                     StringBuilder messageToUser= new StringBuilder("Do you want to change these values:\n");
-                    for(final ASetting setting: modifiedSettings){
+                    for(final AbstractSetting setting: modifiedSettings){
                         messageToUser.append(setting.KEY).append(" ").append(setting.getCurrentValue()).append("\n");
                     }
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -145,7 +138,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
                     builder.setMessage(messageToUser.toString());
                     builder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            for(final ASetting setting:modifiedSettings){
+                            for(final AbstractSetting setting:modifiedSettings){
                                 client.sendMessage(Message.BuildMessageCHANGE(sSyncGroundOnly.isChecked(),setting.KEY,setting.getCurrentValue()));
                                 //setting.reset();
                             }
@@ -159,6 +152,14 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
     }
 
 
+    private boolean checkConnectedAndMessageUser(){
+        if(!connectionEstablished.get()){
+            Toast.makeText(context, "Please connect your device first", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
     @Override
     protected void onResume(){
         super.onResume();
@@ -170,11 +171,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
     protected void onPause(){
         super.onPause();
         client.stop();
-        try {
-            client.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        client.joinSafe();
     }
 
 
@@ -182,7 +179,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
 
     private void processMessageGET_OK(final boolean ground,final String key,final String value){
         //find the matching setting and call its processing function
-        for(final ASetting setting: mSelectedSyncSettings){
+        for(final AbstractSetting setting: mSelectedSyncSettings){
             if(key.equals(setting.KEY)){
                 setting.processMessageGET_OK(ground,value,sSyncGroundOnly.isChecked());
                 break;
@@ -192,7 +189,7 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
 
     private void processMessageCHANGE_OK(final boolean ground,final String key,final String value){
         //find the matching setting and call its processing function
-        for(final ASetting setting: mSelectedSyncSettings){
+        for(final AbstractSetting setting: mSelectedSyncSettings){
             if(key.equals(setting.KEY)){
                 setting.processMessageCHANGE_OK(ground,value,sSyncGroundOnly.isChecked());
                 break;
@@ -234,22 +231,19 @@ public class MainActivity2  extends AppCompatActivity implements TCPClient.Proce
 
 
     @Override
-    public void connectionEstablished() {
+    public void OnConnectionEstablished() {
         connectionEstablished.set(true);
-        //for(final ASetting setting : mSelectedSyncSettings){
-            //client.sendMessage("GET "+setting.KEY);
-        //}
         System.out.println("Connection established");
     }
 
     @Override
-    public void connectionClosed(){
+    public void OnConnectionClosed(){
         System.out.println("Connection closed");
         connectionEstablished.set(false);
         ((Activity)context).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                for(final ASetting setting: mSelectedSyncSettings){
+                for(final AbstractSetting setting: mSelectedSyncSettings){
                     setting.reset();
                 }
             }

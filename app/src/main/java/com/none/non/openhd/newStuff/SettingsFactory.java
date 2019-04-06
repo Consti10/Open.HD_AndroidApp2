@@ -9,88 +9,87 @@ import java.util.ArrayList;
 public class SettingsFactory {
 
 
-    public static ArrayList<ASetting> OPENHD_SETTINGS_1(final Context c){
-        ArrayList<ASetting> list=new ArrayList<>();
-        list.add(new ASetting("FC_RC_BAUDRATE",c, R.array.FC_RC_BAUDRATE));
-        list.add(new ASetting("FC_TELEMETRY_BAUDRATE",c));
-        list.add(new ASetting("FC_MSP_BAUDRATE",c));
-        list.add(new ASetting("FREQ",c,R.array.FREQ));
-        list.add(new ASetting("FC_RC_SERIALPORT",c));
-        list.add(new ASetting("FC_TELEMETRY_SERIALPORT",c));
-        list.add(new ASetting("FC_MSP_SERIALPORT",c));
-        list.add(new ASetting("UPDATE_NTH_TIME",c));
-        list.add(new ASetting("DATARATE",c));
-        list.add(new ASetting("VIDEO_BLOCKS",c));
-        list.add(new ASetting("VIDEO_FECS",c));
-        list.add(new ASetting("VIDEO_BLOCKLENGTH",c));
-        list.add(new ASetting("VIDEO_BITRATE",c));
-        list.add(new ASetting("BITRATE_PERCENT",c));
-        list.add(new ASetting("WIDTH",c));
-        list.add(new ASetting("HEIGHT",c));
-        list.add(new ASetting("EXTRAPARAMS",c));
-        list.add(new ASetting("KEYFRAMERATE",c));
-        list.add(new ASetting("FPS",c));
-        list.add(new ASetting("FREQSCAN",c));
-        list.add(new ASetting("TXMODE",c));
-        list.add(new ASetting("TELEMETRY_TRANSMISSION",c));
-        list.add(new ASetting("TELEMETRY_UPLINK",c));
-        list.add(new ASetting("RC",c));
-        list.add(new ASetting("CTS_PROTECTION",c));
-        list.add(new ASetting("WIFI_HOTSPOT",c,R.array.Y_OR_N));
-        list.add(new ASetting("WIFI_HOTSPOT_NIC",c));
-        list.add(new ASetting("ETHERNET_HOTSPOT",c,R.array.Y_OR_N));
-        list.add(new ASetting("ENABLE_SCREENSHOTS",c,R.array.Y_OR_N));
-        list.add(new ASetting("FORWARD_STREAM",c));
-        list.add(new ASetting("VIDEO_UDP_PORT",c));
+    public static ArrayList<AbstractSetting> OPENHD_SETTINGS_1(final Context c){
+        ArrayList<AbstractSetting> list=new ArrayList<>();
+        list.add(new AbstractSetting("FC_RC_BAUDRATE",c, R.array.FC_RC_BAUDRATE));
+        list.add(new AbstractSetting("FC_TELEMETRY_BAUDRATE",c));
+        list.add(new AbstractSetting("FC_MSP_BAUDRATE",c));
+        list.add(new AbstractSetting("FREQ",c,R.array.FREQ));
+        list.add(new AbstractSetting("FC_RC_SERIALPORT",c));
+        list.add(new AbstractSetting("FC_TELEMETRY_SERIALPORT",c));
+        list.add(new AbstractSetting("FC_MSP_SERIALPORT",c));
+        list.add(new AbstractSetting("UPDATE_NTH_TIME",c));
+        list.add(new AbstractSetting("DATARATE",c));
+        list.add(new AbstractSetting("VIDEO_BLOCKS",c));
+        list.add(new AbstractSetting("VIDEO_FECS",c));
+        list.add(new AbstractSetting("VIDEO_BLOCKLENGTH",c));
+        list.add(new AbstractSetting("VIDEO_BITRATE",c));
+        list.add(new AbstractSetting("BITRATE_PERCENT",c));
+        list.add(new AbstractSetting("WIDTH",c));
+        list.add(new AbstractSetting("HEIGHT",c));
+        list.add(new AbstractSetting("EXTRAPARAMS",c));
+        list.add(new AbstractSetting("KEYFRAMERATE",c));
+        list.add(new AbstractSetting("FPS",c));
+        list.add(new AbstractSetting("FREQSCAN",c));
+        list.add(new AbstractSetting("TXMODE",c));
+        list.add(new AbstractSetting("TELEMETRY_TRANSMISSION",c));
+        list.add(new AbstractSetting("TELEMETRY_UPLINK",c));
+        list.add(new AbstractSetting("RC",c));
+        list.add(new AbstractSetting("CTS_PROTECTION",c));
+        list.add(new AbstractSetting("WIFI_HOTSPOT",c,R.array.Y_OR_N));
+        list.add(new AbstractSetting("WIFI_HOTSPOT_NIC",c));
+        list.add(new AbstractSetting("ETHERNET_HOTSPOT",c,R.array.Y_OR_N));
+        list.add(new AbstractSetting("ENABLE_SCREENSHOTS",c,R.array.Y_OR_N));
+        list.add(new AbstractSetting("FORWARD_STREAM",c));
+        list.add(new AbstractSetting("VIDEO_UDP_PORT",c));
         return list;
     }
 
-    public static ArrayList<ASetting> OPENHD_SETTINGS_2(final Context c){
-        ArrayList<ASetting> list=new ArrayList<>();
-        list.add(new ASetting("txpowerA",c));
-        list.add(new ASetting("txpowerR",c));
+    public static ArrayList<AbstractSetting> OPENHD_SETTINGS_2(final Context c){
+        ArrayList<AbstractSetting> list=new ArrayList<>();
+        list.add(new AbstractSetting("TxPower_A",c));
+        list.add(new AbstractSetting("TxPower_R",c));
         //
-        list.add(new ASetting("DefaultAudioOut",c));
-        list.add(new ASetting("RemoteSettingsEnabled",c));
-        list.add(new ASetting("IsAudioTransferEnabled",c));
-        list.add(new ASetting("IsCamera1Enabled",c));
-        list.add(new ASetting("IsCamera2Enabled",c));
-        list.add(new ASetting("IsCamera3Enabled",c));
-        list.add(new ASetting("IsCamera4Enabled",c));
-        list.add(new ASetting("DefaultCameraId",c));
-        list.add(new ASetting("ChannelToListen",c));
-        list.add(new ASetting("Camera1ValueMin",c));
-        list.add(new ASetting("Camera1ValueMax",c));
-        list.add(new ASetting("Camera2ValueMin",c));
-        list.add(new ASetting("Camera2ValueMax",c));
-        list.add(new ASetting("Camera3ValueMin",c));
-        list.add(new ASetting("Camera3ValueMax",c));
-        list.add(new ASetting("Camera4ValueMin",c));
-        list.add(new ASetting("Camera4ValueMax",c));
-        list.add(new ASetting("EncryptionOrRange",c, R.array.EncryptionOrRangeArray));
-        list.add(new ASetting("IsBandSwicherEnabled",c));
-        list.add(new ASetting("Bandwidth",c));
-        list.add(new ASetting("UplinkSpeed",c));
-        list.add(new ASetting("ChannelToListen2",c));
-        list.add(new ASetting("PrimaryCardMAC",c));
-        list.add(new ASetting("SlaveCardMAC",c));
-        list.add(new ASetting("Band5Below",c));
-        list.add(new ASetting("Band10ValueMin",c));
-        list.add(new ASetting("Band10ValueMax",c));
-        list.add(new ASetting("Band20After",c));
+        list.add(new AbstractSetting("DefaultAudioOut",c));
+        list.add(new AbstractSetting("IsAudioTransferEnabled",c));
+        list.add(new AbstractSetting("IsCamera1Enabled",c));
+        list.add(new AbstractSetting("IsCamera2Enabled",c));
+        list.add(new AbstractSetting("IsCamera3Enabled",c));
+        list.add(new AbstractSetting("IsCamera4Enabled",c));
+        list.add(new AbstractSetting("DefaultCameraId",c));
+        list.add(new AbstractSetting("ChannelToListen",c));
+        list.add(new AbstractSetting("Camera1ValueMin",c));
+        list.add(new AbstractSetting("Camera1ValueMax",c));
+        list.add(new AbstractSetting("Camera2ValueMin",c));
+        list.add(new AbstractSetting("Camera2ValueMax",c));
+        list.add(new AbstractSetting("Camera3ValueMin",c));
+        list.add(new AbstractSetting("Camera3ValueMax",c));
+        list.add(new AbstractSetting("Camera4ValueMin",c));
+        list.add(new AbstractSetting("Camera4ValueMax",c));
+        list.add(new AbstractSetting("EncryptionOrRange",c, R.array.Encryption_OR_Range));
+        list.add(new AbstractSetting("IsBandSwicherEnabled",c));
+        list.add(new AbstractSetting("Bandwidth",c));
+        list.add(new AbstractSetting("UplinkSpeed",c));
+        list.add(new AbstractSetting("ChannelToListen2",c));
+        list.add(new AbstractSetting("PrimaryCardMAC",c));
+        list.add(new AbstractSetting("SlaveCardMAC",c));
+        list.add(new AbstractSetting("Band5Below",c));
+        list.add(new AbstractSetting("Band10ValueMin",c));
+        list.add(new AbstractSetting("Band10ValueMax",c));
+        list.add(new AbstractSetting("Band20After",c));
         return list;
     }
 
-    public static ArrayList<ASetting> OPENHD_OSD_Settings(final Context c){
-        ArrayList<ASetting> list=new ArrayList<>();
-        list.add(new ASetting("IMPERIAL",c,R.array.true_OR_false));
-        list.add(new ASetting("COPTER",c,R.array.true_OR_false));
-        list.add(new ASetting("GLOBAL_SCALE",c));
-        list.add(new ASetting("CELLS",c));
-        list.add(new ASetting("CELL_MAX",c));
-        list.add(new ASetting("CELL_MIN",c));
-        list.add(new ASetting("CELL_WARNING1",c));
-        list.add(new ASetting("CELL_WARNING2",c));
+    public static ArrayList<AbstractSetting> OPENHD_OSD_Settings(final Context c){
+        ArrayList<AbstractSetting> list=new ArrayList<>();
+        list.add(new AbstractSetting("IMPERIAL",c,R.array.true_OR_false));
+        list.add(new AbstractSetting("COPTER",c,R.array.true_OR_false));
+        list.add(new AbstractSetting("GLOBAL_SCALE",c));
+        list.add(new AbstractSetting("CELLS",c));
+        list.add(new AbstractSetting("CELL_MAX",c));
+        list.add(new AbstractSetting("CELL_MIN",c));
+        list.add(new AbstractSetting("CELL_WARNING1",c));
+        list.add(new AbstractSetting("CELL_WARNING2",c));
         return list;
     }
 }

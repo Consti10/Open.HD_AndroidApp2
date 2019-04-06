@@ -110,7 +110,7 @@ public class IPResolver {
             }
         }
         final long delta=System.currentTimeMillis()-startTime;
-        System.out.println("Pinging all ips took ms:"+delta);
+        System.out.println("Pinging all ips took ms:"+delta+allReachableIPs.toString());
         return allReachableIPs;
     }
 
@@ -124,7 +124,7 @@ public class IPResolver {
             final String IP="192.168.42."+Integer.toString(ipFourthElement);
             try {
                 final InetAddress address=InetAddress.getByName(IP);
-                final boolean reachable=address.isReachable(20);
+                final boolean reachable=address.isReachable(30);
                 if(reachable){
                     //IP found !
                     reachableIPs.add(IP);

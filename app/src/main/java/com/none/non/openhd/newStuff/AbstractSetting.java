@@ -38,11 +38,12 @@ import java.util.List;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher {
-    private static final String NOT_LOADED="Setting not loaded";
+public class AbstractSetting implements AdapterView.OnItemSelectedListener,TextWatcher {
+    private static final String NOT_LOADED="Not loaded";
     private static final String NOT_IN_SYNC="Not in sync";
     private final Context context;
     public final String KEY;
+    public final TableRow tableRow;
     //Text view holding key
     private final AppCompatTextView textView;
     //There are 2 input methods:
@@ -54,7 +55,6 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
     private ArrayAdapter<String> adapter; //null when not spinner
     final List<String> VALID_DROPDOWN_VALUES;
     private final EditText editText;
-    public final TableRow tableRow;
     private final UserChangedText userChangedText=new UserChangedText() {
         @Override
         public void onTextChanged(String newText) {
@@ -66,7 +66,10 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
     private boolean updatedByUser=false;
     private boolean errornousValue=false;
 
-    public ASetting(final String key, final Context c){
+    private String lastReportedValueGroundPi;
+    private String lastReportedValueAirPi;
+
+    public AbstractSetting(final String key, final Context c){
         context=c;
         this.KEY =key;
         textView=new AppCompatTextView(c);
@@ -82,7 +85,7 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
         editText.addTextChangedListener(this);
     }
 
-    public ASetting(final String key,final Context c,@ArrayRes int textArrayResId){
+    public AbstractSetting(final String key, final Context c, @ArrayRes int textArrayResId){
         context=c;
         this.KEY =key;
         textView=new AppCompatTextView(c);
@@ -115,7 +118,9 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
         }
         return editText.getText().toString();
     }
+
     public void reset(){
+        System.out.println("Reset"+KEY);
         updatedByUser=false;
         inputViewSetColor(Color.RED);
         inputViewUpdateText(NOT_LOADED);
@@ -129,6 +134,11 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
         //In this case we don't wait for the value from the air pi
         if(errornousValue){
             return;
+        }
+        if(ground){
+            lastReportedValueGroundPi=value;
+        }else{
+            lastReportedValueAirPi=value;
         }
         if(ground){
             if(syncGroundOnly){
@@ -286,7 +296,7 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
                     //Toast.makeText(context,"Invalid value: "+KEY+"="+value,Toast.LENGTH_LONG).show();
                     errornousValue=true;
                     adapter.clear();
-                    adapter.add("INVALID"+value);
+                    adapter.add("INVALID"+value+"X");
                     spinner.setAdapter(adapter);
                     spinner.setSelection(0,false);
                 }
@@ -320,7 +330,6 @@ public class ASetting implements AdapterView.OnItemSelectedListener,TextWatcher 
         if (selectedText != null) {
             selectedText.setTextColor(Color.RED);
         }*/
-
     }
 
     @Override

@@ -46,7 +46,7 @@ public final class IsConnected {
     }
 
     public static boolean checkWifiConnectedTest(final Context context){
-        return checkWifiConnectedToNetwork(context,"\"LenovoTest\"");
+        return checkWifiConnectedToNetwork(context,"\"TestAero\"");
     }
 
     public static boolean checkWifiConnectedEZWB(final Context context){
