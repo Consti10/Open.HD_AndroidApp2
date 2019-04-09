@@ -16,7 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 @SuppressWarnings("WeakerAccess")
 public class TCPClient implements Runnable {
 
-    private static final int PORT = 5601;
+    private static final int PORT = 5700;
 
     private final LinkedBlockingQueue<String> mSendQueue;
     private final ProcessMessage mProcessMessage;

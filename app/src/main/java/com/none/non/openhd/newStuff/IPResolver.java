@@ -107,6 +107,7 @@ public class IPResolver {
             } catch (InterruptedException e) {
                 //e.printStackTrace();
                 worker.interrupt();
+                Thread.currentThread().interrupt();
             }
         }
         final long delta=System.currentTimeMillis()-startTime;
