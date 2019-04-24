@@ -18,6 +18,8 @@ import android.widget.Toast;
 import com.google.android.material.tabs.TabLayout;
 import com.none.non.openhd.R;
 
+import java.lang.reflect.Array;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -44,6 +46,7 @@ public class ActivityChangeSettings extends AppCompatActivity implements TCPClie
         context=this;
         setContentView(R.layout.activity_change_settings);
         //Note: call OPENHD_SETTINGS_1 after setContentView !
+        //For performance we initialize all of them at startup
         ALL_SYNCHRONIZED_SETTINGS=new ArrayList<>();
         ALL_SYNCHRONIZED_SETTINGS.add(SettingsFactory.OPENHD_SETTINGS_1(this));
         ALL_SYNCHRONIZED_SETTINGS.add(SettingsFactory.OPENHD_SETTINGS_2(this));
@@ -107,10 +110,12 @@ public class ActivityChangeSettings extends AppCompatActivity implements TCPClie
                 if(checkConnectedAndMessageUser()){
                     //Disable all views
                     //send GET message for all synchronized settings
+                    final ArrayList<String> keys=new ArrayList<>();
                     for(final AbstractSetting setting: mSelectedSyncSettings){
                         setting.reset();
-                        client.sendMessage(Message.BuildMessageGET(sSyncGroundOnly.isChecked(),setting.KEY));
+                        keys.add(setting.KEY);
                     }
+                    client.sendMessage(Message.BuildMessageGET(sSyncGroundOnly.isChecked(),keys));
                 }
             }
         });
@@ -120,28 +125,25 @@ public class ActivityChangeSettings extends AppCompatActivity implements TCPClie
                 if(!checkConnectedAndMessageUser()){
                     return;
                 }
-                final ArrayList<AbstractSetting> modifiedSettings=new ArrayList<>();
+                final ArrayList<KeyValuePair> modifiedSettings=new ArrayList<>();
                 for(final AbstractSetting setting: mSelectedSyncSettings){
                     if(setting.hasBeenUpdatedByUser()){
-                        modifiedSettings.add(setting);
+                        modifiedSettings.add(new KeyValuePair(setting.KEY,setting.getCurrentValue()));
                     }
                 }
                 if(modifiedSettings.isEmpty()){
                     Toast.makeText(context,"Change settings first",Toast.LENGTH_SHORT).show();
                 }else{
                     StringBuilder messageToUser= new StringBuilder("Do you want to change these values:\n");
-                    for(final AbstractSetting setting: modifiedSettings){
-                        messageToUser.append(setting.KEY).append(" ").append(setting.getCurrentValue()).append("\n");
+                    for(final KeyValuePair setting: modifiedSettings){
+                        messageToUser.append(setting.key).append(" ").append(setting.value).append("\n");
                     }
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setCancelable(true);
                     builder.setMessage(messageToUser.toString());
                     builder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            for(final AbstractSetting setting:modifiedSettings){
-                                client.sendMessage(Message.BuildMessageCHANGE(sSyncGroundOnly.isChecked(),setting.KEY,setting.getCurrentValue()));
-                                //setting.reset();
-                            }
+                            client.sendMessage(Message.BuildMessageCHANGE(sSyncGroundOnly.isChecked(),modifiedSettings));
                         }
                     });
                     AlertDialog dialog = builder.create();
@@ -177,22 +179,26 @@ public class ActivityChangeSettings extends AppCompatActivity implements TCPClie
 
 
 
-    private void processMessageGET_OK(final boolean ground,final String key,final String value){
+    private void processMessageGET_OK(final Message message){
         //find the matching setting and call its processing function
-        for(final AbstractSetting setting: mSelectedSyncSettings){
-            if(key.equals(setting.KEY)){
-                setting.processMessageGET_OK(ground,value,sSyncGroundOnly.isChecked());
-                break;
+        final ArrayList<KeyValuePair> pairs=message.getKeyValuePairs();
+        for(final KeyValuePair pair:pairs){
+            for(final AbstractSetting setting:mSelectedSyncSettings){
+                if(pair.key.equals(setting.KEY)){
+                    setting.processMessageGET_OK(message.ground(),pair.value,sSyncGroundOnly.isChecked());
+                }
             }
         }
     }
 
-    private void processMessageCHANGE_OK(final boolean ground,final String key,final String value){
+    private void processMessageCHANGE_OK(final Message message){
         //find the matching setting and call its processing function
-        for(final AbstractSetting setting: mSelectedSyncSettings){
-            if(key.equals(setting.KEY)){
-                setting.processMessageCHANGE_OK(ground,value,sSyncGroundOnly.isChecked());
-                break;
+        final ArrayList<KeyValuePair> pairs=message.getKeyValuePairs();
+        for(final KeyValuePair pair:pairs){
+            for(final AbstractSetting setting:mSelectedSyncSettings){
+                if(pair.key.equals(setting.KEY)){
+                    setting.processMessageGET_OK(message.ground(),pair.value,sSyncGroundOnly.isChecked());
+                }
             }
         }
     }
@@ -205,20 +211,20 @@ public class ActivityChangeSettings extends AppCompatActivity implements TCPClie
             @Override
             public void run() {
                 switch (message.cmd) {
-                    case "HELLO":{
+                    case Message.HELLO:{
                         client.sendMessage(Message.BuildMessageHELLO_OK());
                         break;
                     }
-                    case "HELLO_OK":{
+                    case Message.HELLO_OK:{
                         Toast.makeText(context,message.src+" "+message.cmd,Toast.LENGTH_SHORT).show();
                         break;
                     }
-                    case "GET_OK": {
-                        processMessageGET_OK(message.ground(),message.dataKey,message.dataValue);
+                    case Message.GET_OK: {
+                        processMessageGET_OK(message);
                         break;
                     }
-                    case "CHANGE_OK": {
-                        processMessageCHANGE_OK(message.ground(),message.dataKey,message.dataValue);
+                    case Message.CHANGE_OK: {
+                        processMessageCHANGE_OK(message);
                         break;
                     }
                     default:

@@ -120,13 +120,14 @@ public class AbstractSetting implements AdapterView.OnItemSelectedListener,TextW
     }
 
     public void reset(){
-        System.out.println("Reset"+KEY);
+        //System.out.println("Reset"+KEY);
         updatedByUser=false;
         inputViewSetColor(Color.RED);
         inputViewUpdateText(NOT_LOADED);
         inputViewSetEnabled(false);
         errornousValue=false;
     }
+
 
     public void processMessageGET_OK(final boolean ground,final String value,final boolean syncGroundOnly){
         //System.out.println("Process get_ok "+KEY+" "+ground+" "+value);

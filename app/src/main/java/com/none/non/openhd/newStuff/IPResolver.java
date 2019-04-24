@@ -129,6 +129,9 @@ public class IPResolver {
                 if(reachable){
                     //IP found !
                     reachableIPs.add(IP);
+                    //System.out.println("Reached"+IP);
+                }else{
+                    //System.out.println("Cannot reach"+IP+" "+address);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
