@@ -7,3 +7,10 @@ Implements a text-based protocoll for exchange of data and commands between app<
 
 Protocol uses '\n' (newline) and '?' as seperators, neither data or commands must contain these symbols.
 
+Download and install app for free from here:
+https://play.google.com/store/apps/details?id=com.none.non.openhd
+
+Or install .apk manually:
+https://github.com/Consti10/Open.HD_AndroidApp2/tree/master/app/release
+
+
