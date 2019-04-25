@@ -44,7 +44,7 @@ public class Message {
         ArrayList<KeyValuePair> ret=new ArrayList<>();
         for(final String pair:dataAsList){
             System.out.println(pair);
-            final String[] keyValue=pair.split("=");
+            final String[] keyValue=pair.split(Pattern.quote("="));
             ret.add(new KeyValuePair(keyValue[0],keyValue[1]));
         }
         return ret;

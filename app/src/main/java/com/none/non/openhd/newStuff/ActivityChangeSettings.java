@@ -51,6 +51,8 @@ public class ActivityChangeSettings extends AppCompatActivity implements TCPClie
         ALL_SYNCHRONIZED_SETTINGS.add(SettingsFactory.OPENHD_SETTINGS_1(this));
         ALL_SYNCHRONIZED_SETTINGS.add(SettingsFactory.OPENHD_SETTINGS_2(this));
         ALL_SYNCHRONIZED_SETTINGS.add(SettingsFactory.OPENHD_OSD_Settings(this));
+        //add the onTouchListener to all settings (visible or not)
+        //Touching them directly will initiate a single refresh
         for(final ArrayList<AbstractSetting> list:ALL_SYNCHRONIZED_SETTINGS){
             for(final AbstractSetting setting:list){
                 setting.getKeyView().setOnTouchListener(new View.OnTouchListener() {
@@ -66,7 +68,7 @@ public class ActivityChangeSettings extends AppCompatActivity implements TCPClie
         }
         mSelectedSyncSettings =ALL_SYNCHRONIZED_SETTINGS.get(0);
         tableLayout=findViewById(R.id.tableLayout);
-        //Populate the layout with all synchronized settings values
+        //Populate the layout with all selected synchronized settings values
         for(final AbstractSetting setting: mSelectedSyncSettings){
             tableLayout.addView(setting.tableRow);
             //Disable the edit text - only as soon as it is initialized with its default currentValue (confirmed by both ground and air) we enable it
@@ -175,7 +177,6 @@ public class ActivityChangeSettings extends AppCompatActivity implements TCPClie
         client.stop();
         client.joinSafe();
     }
-
 
 
 
